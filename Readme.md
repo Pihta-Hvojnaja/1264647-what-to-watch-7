@@ -1,7 +1,7 @@
 # Личный проект «Что посмотреть»
 
-* Студент: [Павел  Чирихин](https://up.htmlacademy.ru/react/7/user/1264647).
-* Наставник: [Юлия Корецкая](https://htmlacademy.ru/profile/id11886).
+* Студент: [Павел Михайлович Чирихин](https://up.htmlacademy.ru/react/7/user/1264647).
+* Наставник: [Юлия Васильевна Корецкая](https://htmlacademy.ru/profile/id11886).
 
 ---
 
