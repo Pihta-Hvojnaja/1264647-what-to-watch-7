@@ -1,12 +1,14 @@
 
 import React from 'react';
+import MoviesDataProp from './movies-data.prop';
 
 
-function Player() {
+function Player(props) {
+  const { videoLink } = props.movieData;
 
   return(
     <div className="player">
-      <video src="#" className="player__video" poster="img/player-poster.jpg"></video>
+      <video src={videoLink} className="player__video" poster="img/player-poster.jpg"></video>
 
       <button type="button" className="player__exit">Exit</button>
 
@@ -39,6 +41,9 @@ function Player() {
     </div>
   );
 }
+
+
+Player.propTypes = MoviesDataProp.movieData;
 
 
 export default Player;
