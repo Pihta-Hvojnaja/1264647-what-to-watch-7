@@ -3,17 +3,16 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './components/app/app';
 
-
-const movieData = {
-  title: 'The Grand Budapest Hotel',
-  genre: 'Drama',
-  yearRelease: '2014',
-};
+import { movieData } from './mocks/film';
+import { moviesData } from './mocks/film';
 
 
 ReactDOM.render(
   <React.StrictMode>
-    <App movieData = {movieData} />
+    <App
+      movieData = { movieData }
+      moviesData = { moviesData }
+    />
   </React.StrictMode>,
   document.getElementById('root'),
 );
