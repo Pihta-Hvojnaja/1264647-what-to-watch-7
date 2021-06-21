@@ -1,14 +1,19 @@
 
-import React from 'react';
-import MoviesDataProp from './movies-data.prop';
+import React, { useState } from 'react';
+import MovieDataProp from './movie-data.prop';
+
+import VideoPlayer from '../video-player/video-player';
+import ButtonPlayContent from '../buttons-control/button-play-content';
+import ButtonPauseContent from '../buttons-control/button-pause-content';
 
 
 function Player(props) {
-  const { videoLink } = props.movieData;
+  const { videoLink, backgroundImage } = props.movieData;
+  const [isPlaying, setIsPlaying] = useState(true);
 
   return(
     <div className="player">
-      <video src={videoLink} className="player__video" poster="img/player-poster.jpg"></video>
+      <VideoPlayer videoLink={videoLink} isPlaying={isPlaying} posterImage={backgroundImage} setIsPlaying={setIsPlaying}/>
 
       <button type="button" className="player__exit">Exit</button>
 
@@ -22,11 +27,14 @@ function Player(props) {
         </div>
 
         <div className="player__controls-row">
-          <button type="button" className="player__play">
-            <svg viewBox="0 0 19 19" width="19" height="19">
-              <use xlinkHref="#play-s"></use>
-            </svg>
-            <span>Play</span>
+          <button
+            type="button"
+            className="player__play"
+            onClick={() => {
+              setIsPlaying(!isPlaying);
+            }}
+          >
+            {isPlaying ? <ButtonPauseContent /> : <ButtonPlayContent />}
           </button>
           <div className="player__name">Transpotting</div>
 
@@ -43,7 +51,7 @@ function Player(props) {
 }
 
 
-Player.propTypes = MoviesDataProp.movieData;
+Player.propTypes = MovieDataProp;
 
 
 export default Player;

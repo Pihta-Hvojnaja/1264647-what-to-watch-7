@@ -5,11 +5,22 @@ import React, { useState } from 'react';
 const DEFAULT_CHECKED_RADIO = 8;
 
 function FormAddReview() {
-  const [, setValueRating] = useState(DEFAULT_CHECKED_RADIO);
-  const [, setText] = useState();
+  const [valueRating, setValueRating] = useState(DEFAULT_CHECKED_RADIO);
+  const [text, setText] = useState('');
 
   return (
-    <form action="#" className="add-review__form">
+    <form
+      action="#"
+      className="add-review__form"
+      onSubmit={(evt) => {
+        evt.preventDefault();
+
+        return {
+          rating: valueRating,
+          comment: text,
+        };
+      }}
+    >
       <div className="rating">
         <div
           className="rating__stars"

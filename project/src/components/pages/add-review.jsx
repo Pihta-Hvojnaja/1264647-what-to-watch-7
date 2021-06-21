@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
-import MoviesDataProp from './movies-data.prop';
+import MovieDataProp from './movie-data.prop';
 
 import { AppRoute } from '../../const';
 
@@ -62,7 +62,7 @@ function AddReview(props) {
 }
 
 
-AddReview.propTypes = MoviesDataProp.movieData;
+AddReview.propTypes = MovieDataProp;
 
 
 export default AddReview;
