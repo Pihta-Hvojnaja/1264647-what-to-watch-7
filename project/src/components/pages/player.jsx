@@ -4,7 +4,6 @@ import MovieDataProp from './movie-data.prop';
 
 import VideoPlayer from '../video-player/video-player';
 import ButtonPlayContent from '../buttons-control/button-play-content';
-import ButtonPauseContent from '../buttons-control/button-pause-content';
 
 
 function Player(props) {
@@ -13,7 +12,12 @@ function Player(props) {
 
   return(
     <div className="player">
-      <VideoPlayer videoLink={videoLink} isPlaying={isPlaying} posterImage={backgroundImage} setIsPlaying={setIsPlaying}/>
+      <VideoPlayer
+        videoLink={videoLink}
+        isPlaying={isPlaying}
+        posterImage={backgroundImage}
+        stopPlayer={() => setIsPlaying(false)}
+      />
 
       <button type="button" className="player__exit">Exit</button>
 
@@ -34,7 +38,7 @@ function Player(props) {
               setIsPlaying(!isPlaying);
             }}
           >
-            {isPlaying ? <ButtonPauseContent /> : <ButtonPlayContent />}
+            {<ButtonPlayContent isPlaying={isPlaying} />}
           </button>
           <div className="player__name">Transpotting</div>
 

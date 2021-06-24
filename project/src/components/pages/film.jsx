@@ -1,20 +1,32 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Link } from 'react-router-dom';
-import MoviesDataProp from './movies-data.prop';
+import AppProp from '../app/app.prop';
 
 import { AppRoute } from '../../const';
+import { TabOption } from '../../const';
 
 import Logo from '../logo/logo';
+import Tabs from '../tabs/tabs';
 import FilmsList from '../films-list/films-list';
 import Footer from '../footer/footer';
 
 
+const QUANTITY_RELATED_MOVIES = 4;
+
+/** Временная ф-ция. Список похожих фильмов мы получаем от сервера */
+const getRelatedMovies = (movieData, moviesData) =>
+  moviesData.filter((movie) => movie.genre === movieData.genre);
+
+
 function Film(props) {
-  const { movieData, moviesData } = props;
+  const { movieData, moviesData, comments } = props;
   const { backgroundImage, name, genre, released } = movieData;
+
+  const [currentOptionTab, setCurrentOptionTab] = useState(TabOption.OVERVIEW);
   const history = useHistory();
+
 
   return(
     <React.Fragment>
@@ -83,37 +95,12 @@ function Film(props) {
             </div>
 
             <div className="film-card__desc">
-              <nav className="film-nav film-card__nav">
-                <ul className="film-nav__list">
-                  <li className="film-nav__item film-nav__item--active">
-                    <a href="/#" className="film-nav__link">Overview</a>
-                  </li>
-                  <li className="film-nav__item">
-                    <a href="/#" className="film-nav__link">Details</a>
-                  </li>
-                  <li className="film-nav__item">
-                    <a href="/#" className="film-nav__link">Reviews</a>
-                  </li>
-                </ul>
-              </nav>
-
-              <div className="film-rating">
-                <div className="film-rating__score">8,9</div>
-                <p className="film-rating__meta">
-                  <span className="film-rating__level">Very good</span>
-                  <span className="film-rating__count">240 ratings</span>
-                </p>
-              </div>
-
-              <div className="film-card__text">
-                <p>In the 1930s, the Grand Budapest Hotel is a popular European ski resort, presided over by concierge Gustave H. (Ralph Fiennes). Zero, a junior lobby boy, becomes Gustave`&apos;`s friend and protege.</p>
-
-                <p>Gustave prides himself on providing first-className service to the hotel`&apos;`s guests, including satisfying the sexual needs of the many elderly women who stay there. When one of Gustave`&apos;`s lovers dies mysteriously, Gustave finds himself the recipient of a priceless painting and the chief suspect in her murder.</p>
-
-                <p className="film-card__director"><strong>Director: Wes Andreson</strong></p>
-
-                <p className="film-card__starring"><strong>Starring: Bill Murray, Edward Norton, Jude Law, Willem Dafoe and other</strong></p>
-              </div>
+              <Tabs
+                currentOptionTab={currentOptionTab}
+                onSetCurrentOptionTab={setCurrentOptionTab}
+                movieData={movieData}
+                comments={comments}
+              />
             </div>
           </div>
         </div>
@@ -123,7 +110,7 @@ function Film(props) {
         <section className="catalog catalog--like-this">
           <h2 className="catalog__title">More like this</h2>
 
-          <FilmsList moviesData={moviesData} />
+          <FilmsList moviesData={getRelatedMovies(movieData, moviesData).slice(0, QUANTITY_RELATED_MOVIES)} />
         </section>
 
         <Footer />
@@ -133,7 +120,7 @@ function Film(props) {
 }
 
 
-Film.propTypes = MoviesDataProp;
+Film.propTypes = AppProp;
 
 
 export default Film;
