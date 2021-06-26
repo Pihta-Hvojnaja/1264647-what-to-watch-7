@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
-import MoviesDataProp from '../pages/movies-data.prop';
+import AppProp from './app.prop';
 
 import { AppRoute } from '../../const';
 
@@ -15,7 +15,7 @@ import NotFoundScreen from '../not-found-screen/not-found-screen';
 
 
 function App(props) {
-  const { movieData, moviesData } = props;
+  const { movieData, moviesData, comments } = props;
 
   return (
     <BrowserRouter>
@@ -36,7 +36,11 @@ function App(props) {
         </Route>
 
         <Route exact path={AppRoute.DEV_FILM}>
-          <Film movieData={movieData} moviesData={moviesData} />
+          <Film
+            movieData={movieData}
+            moviesData={moviesData}
+            comments={comments}
+          />
         </Route>
 
         <Route exact path={AppRoute.DEV_REVIEW}>
@@ -56,7 +60,7 @@ function App(props) {
 }
 
 
-App.propTypes = MoviesDataProp;
+App.propTypes = AppProp;
 
 
 export default App;
