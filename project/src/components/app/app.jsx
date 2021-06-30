@@ -1,7 +1,9 @@
 
 import React from 'react';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
-import AppProp from './app.prop';
+import PropTypes from 'prop-types';
+import MovieDataProp from '../pages/movie-data.prop';
+import CommentDataProp from '../pages/comment-data.prop';
 
 import { AppRoute } from '../../const';
 
@@ -23,7 +25,6 @@ function App(props) {
         <Route exact path={AppRoute.ROOT}>
           <Main
             movieData={movieData}
-            moviesData={moviesData}
           />
         </Route>
 
@@ -60,7 +61,11 @@ function App(props) {
 }
 
 
-App.propTypes = AppProp;
+App.propTypes = {
+  movieData: MovieDataProp,
+  moviesData: PropTypes.arrayOf(MovieDataProp).isRequired,
+  comments: PropTypes.arrayOf(CommentDataProp).isRequired,
+};
 
 
 export default App;

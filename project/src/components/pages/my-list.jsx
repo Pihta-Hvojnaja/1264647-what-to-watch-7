@@ -1,14 +1,21 @@
 
-import React from 'react';
-import MoviesDataProp from './movies-data.prop';
+import React, { useEffect } from 'react';
+import { connect } from 'react-redux';
+import { ActionCreator } from '../../store/action';
+import PropTypes from 'prop-types';
+import MovieDataProp from './movie-data.prop';
+
+import { NumberFilmsShown } from '../../const';
 
 import Logo from '../logo/logo';
 import FilmsList from '../films-list/films-list';
 import Footer from '../footer/footer';
 
 
-function MyList(props) {
-  const { moviesData } = props;
+function MyList({moviesData, changingFilmsList}) {
+
+  useEffect(() => changingFilmsList(NumberFilmsShown.INITIAL));
+
 
   return(
     <div className="user-page">
@@ -32,7 +39,7 @@ function MyList(props) {
       <section className="catalog">
         <h2 className="catalog__title visually-hidden">Catalog</h2>
 
-        <FilmsList moviesData={moviesData} />
+        <FilmsList moviesData={moviesData}/>
       </section>
 
       <Footer />
@@ -41,7 +48,18 @@ function MyList(props) {
 }
 
 
-MyList.propTypes = MoviesDataProp.moviesData;
+MyList.propTypes = {
+  moviesData: PropTypes.arrayOf(MovieDataProp).isRequired,
+  changingFilmsList: PropTypes.func.isRequired,
+};
 
 
-export default MyList;
+const mapDispatchToProps = (dispatch) => ({
+  changingFilmsList(numberFilmsShown) {
+    dispatch(ActionCreator.changingFilmsList(numberFilmsShown));
+  },
+});
+
+
+export { MyList };
+export default connect(null, mapDispatchToProps)(MyList);

@@ -1,11 +1,16 @@
 
-import React, { useState } from 'react';
+import React, { useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Link } from 'react-router-dom';
-import AppProp from '../app/app.prop';
+import { connect } from 'react-redux';
+import { ActionCreator } from '../../store/action';
+import PropTypes from 'prop-types';
+import MovieDataProp from './movie-data.prop';
+import CommentDataProp from './comment-data.prop';
 
 import { AppRoute } from '../../const';
-import { TabOption } from '../../const';
+
+import { NumberFilmsShown } from '../../const';
 
 import Logo from '../logo/logo';
 import Tabs from '../tabs/tabs';
@@ -13,19 +18,23 @@ import FilmsList from '../films-list/films-list';
 import Footer from '../footer/footer';
 
 
-const QUANTITY_RELATED_MOVIES = 4;
-
 /** Временная ф-ция. Список похожих фильмов мы получаем от сервера */
 const getRelatedMovies = (movieData, moviesData) =>
   moviesData.filter((movie) => movie.genre === movieData.genre);
 
 
 function Film(props) {
-  const { movieData, moviesData, comments } = props;
+  const {
+    movieData,
+    moviesData,
+    comments,
+    changingFilmsList,
+  } = props;
+
   const { backgroundImage, name, genre, released } = movieData;
 
-  const [currentOptionTab, setCurrentOptionTab] = useState(TabOption.OVERVIEW);
   const history = useHistory();
+  useEffect(() => changingFilmsList(NumberFilmsShown.FOR_MORE_LIKE_THIS));
 
 
   return(
@@ -96,8 +105,6 @@ function Film(props) {
 
             <div className="film-card__desc">
               <Tabs
-                currentOptionTab={currentOptionTab}
-                onSetCurrentOptionTab={setCurrentOptionTab}
                 movieData={movieData}
                 comments={comments}
               />
@@ -110,7 +117,9 @@ function Film(props) {
         <section className="catalog catalog--like-this">
           <h2 className="catalog__title">More like this</h2>
 
-          <FilmsList moviesData={getRelatedMovies(movieData, moviesData).slice(0, QUANTITY_RELATED_MOVIES)} />
+          <FilmsList
+            moviesData={getRelatedMovies(movieData, moviesData)}
+          />
         </section>
 
         <Footer />
@@ -120,7 +129,20 @@ function Film(props) {
 }
 
 
-Film.propTypes = AppProp;
+Film.propTypes = {
+  movieData: MovieDataProp,
+  moviesData: PropTypes.arrayOf(MovieDataProp).isRequired,
+  comments: PropTypes.arrayOf(CommentDataProp).isRequired,
+  changingFilmsList: PropTypes.func.isRequired,
+};
 
 
-export default Film;
+const mapDispatchToProps = (dispatch) => ({
+  changingFilmsList(numberFilmsShown) {
+    dispatch(ActionCreator.changingFilmsList(numberFilmsShown));
+  },
+});
+
+
+export { Film };
+export default connect(null, mapDispatchToProps)(Film);

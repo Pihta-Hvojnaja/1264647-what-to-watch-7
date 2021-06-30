@@ -1,6 +1,5 @@
 
 import React from 'react';
-import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 import { TabOption } from '../../const';
@@ -27,9 +26,9 @@ function TabsButtons({currentOptionTab, onSetCurrentOptionTab}) {
         {
           buttonOptions.map((buttonOption) => (
             <li key={buttonOption} className={`film-nav__item ${getActiveClassName(buttonOption)}`}>
-              <Link id={buttonOption} to="#" className="film-nav__link">
+              <a id={buttonOption} href="/" className="film-nav__link">
                 {buttonOption}
-              </Link>
+              </a>
             </li>
           ))
         }

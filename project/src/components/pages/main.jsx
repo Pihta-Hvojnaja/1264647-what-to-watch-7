@@ -2,20 +2,27 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useHistory } from 'react-router-dom';
-import MoviesDataProp from './movies-data.prop';
+
+import MovieDataProp from './movie-data.prop';
 
 import { AppRoute } from '../../const';
 
 import Logo from '../logo/logo';
-import FilmsList from '../films-list/films-list';
+import FilmsListByGenre from '../films-list-by-genre/films-list-by-genre';
 import Footer from '../footer/footer';
 
 
-function Main(props) {
-  const { movieData, moviesData } = props;
-  const { posterImage, backgroundImage, name, genre, released } = movieData;
+function Main({movieData}) {
+  const {
+    posterImage,
+    backgroundImage,
+    name,
+    genre,
+    released,
+  } = movieData;
 
   const history = useHistory();
+
 
   return(
     <React.Fragment>
@@ -83,49 +90,7 @@ function Main(props) {
       </section>
 
       <div className="page-content">
-        <section className="catalog">
-          <h2 className="catalog__title visually-hidden">Catalog</h2>
-
-          <ul className="catalog__genres-list">
-            <li className="catalog__genres-item catalog__genres-item--active">
-              <a href="/#" className="catalog__genres-link">All genres</a>
-            </li>
-            <li className="catalog__genres-item">
-              <a href="/#" className="catalog__genres-link">Comedies</a>
-            </li>
-            <li className="catalog__genres-item">
-              <a href="/#" className="catalog__genres-link">Crime</a>
-            </li>
-            <li className="catalog__genres-item">
-              <a href="/#" className="catalog__genres-link">Documentary</a>
-            </li>
-            <li className="catalog__genres-item">
-              <a href="/#" className="catalog__genres-link">Dramas</a>
-            </li>
-            <li className="catalog__genres-item">
-              <a href="/#" className="catalog__genres-link">Horror</a>
-            </li>
-            <li className="catalog__genres-item">
-              <a href="/#" className="catalog__genres-link">Kids & Family</a>
-            </li>
-            <li className="catalog__genres-item">
-              <a href="/#" className="catalog__genres-link">Romance</a>
-            </li>
-            <li className="catalog__genres-item">
-              <a href="/#" className="catalog__genres-link">Sci-Fi</a>
-            </li>
-            <li className="catalog__genres-item">
-              <a href="/#" className="catalog__genres-link">Thrillers</a>
-            </li>
-          </ul>
-
-          <FilmsList moviesData = {moviesData} />
-
-          <div className="catalog__more">
-            <button className="catalog__button" type="button">Show more</button>
-          </div>
-        </section>
-
+        <FilmsListByGenre />
         <Footer />
       </div>
     </React.Fragment>
@@ -133,7 +98,9 @@ function Main(props) {
 }
 
 
-Main.propTypes = MoviesDataProp;
+Main.propTypes = {
+  movieData: MovieDataProp,
+};
 
 
 export default Main;
