@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
-import MoviesDataProp from '../pages/movies-data.prop';
+import MovieDataProp from '../pages/movie-data.prop';
 import PropTypes from 'prop-types';
 
 import { AppRoute } from '../../const';
@@ -38,7 +38,7 @@ function SmallFilmCard(props) {
 
 
 SmallFilmCard.propTypes = {
-  movieData: PropTypes.shape(MoviesDataProp.movieData),
+  movieData: MovieDataProp,
   isPlaying: PropTypes.bool,
 };
 

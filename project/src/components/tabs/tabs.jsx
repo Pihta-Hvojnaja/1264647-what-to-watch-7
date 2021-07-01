@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import movieDataProp from '../pages/movie-data.prop';
 import CommentDataProp from '../pages/comment-data.prop';
@@ -14,17 +14,17 @@ import TabReviews from './tab-reviews';
 
 function Tabs(props) {
   const {
-    currentOptionTab,
-    onSetCurrentOptionTab,
     movieData,
     comments,
   } = props;
+
+  const [currentOptionTab, setCurrentOptionTab] = useState(TabOption.OVERVIEW);
 
   const tabsButtonsComponent =
     (
       <TabsButtons
         currentOptionTab={currentOptionTab}
-        onSetCurrentOptionTab={onSetCurrentOptionTab}
+        onSetCurrentOptionTab={setCurrentOptionTab}
       />
     );
 
@@ -56,8 +56,6 @@ function Tabs(props) {
 
 
 Tabs.propTypes = {
-  currentOptionTab: PropTypes.string.isRequired,
-  onSetCurrentOptionTab: PropTypes.func.isRequired,
   movieData: movieDataProp,
   comments: PropTypes.arrayOf(CommentDataProp).isRequired,
 };

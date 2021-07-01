@@ -14,3 +14,13 @@ export const TabOption = {
   DETAILS: 'Details',
   REVIEWS: 'Reviews',
 };
+
+
+export const INITIAL_GENRE = 'All genres';
+
+
+export const NumberFilmsShown = {
+  INITIAL: null,
+  FOR_GENRE: 8,
+  FOR_MORE_LIKE_THIS: 4,
+};
