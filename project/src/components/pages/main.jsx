@@ -1,32 +1,46 @@
 
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { useHistory } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { connect } from 'react-redux';
+import { fetchPosterMovie, fetchMovies } from '../../store/api-actions';
 
+import PropTypes from 'prop-types';
 import MovieDataProp from './movie-data.prop';
 
-import { AppRoute } from '../../const';
-
+import LoadingScreen from '../loading-screen/loading-screen';
 import Logo from '../logo/logo';
-import FilmsListByGenre from '../films-list-by-genre/films-list-by-genre';
+import UserBlock from '../user-block/user-block';
+import ButtonsFilmCard from '../buttons-film-card/buttons-film-card';
+import FilmListByGenre from '../film-list-by-genre/film-list-by-genre';
 import Footer from '../footer/footer';
 
 
-function Main({movieData}) {
+function Main(props) {
   const {
-    posterImage,
-    backgroundImage,
-    name,
-    genre,
-    released,
-  } = movieData;
+    posterMovieData,
+    loadPosterMovie,
+    loadMovies,
+    isPosterMovieLoaded,
+    isMoviesLoaded,
+  } = props;
 
-  const history = useHistory();
+  const { id, posterImage, backgroundImage, name, genre, released } = posterMovieData;
 
+  useEffect(() => {
+    switch (true) {
+      case !isPosterMovieLoaded:
+        return loadPosterMovie();
+      case !isMoviesLoaded:
+        return loadMovies();
+      default: break;
+    }
+  });
+
+  if (!isPosterMovieLoaded || !isMoviesLoaded) {
+    return <LoadingScreen />;
+  }
 
   return(
     <React.Fragment>
-
       <section className="film-card">
         <div className="film-card__bg">
           <img src={backgroundImage} alt={name} />
@@ -35,18 +49,8 @@ function Main({movieData}) {
         <h1 className="visually-hidden">WTW</h1>
 
         <header className="page-header film-card__head">
-          <Logo />
-
-          <ul className="user-block">
-            <li className="user-block__item">
-              <div className="user-block__avatar">
-                <img src="img/avatar.jpg" alt="User avatar" width="63" height="63" />
-              </div>
-            </li>
-            <li className="user-block__item">
-              <Link  to="/" className="user-block__link">Sign out</Link>
-            </li>
-          </ul>
+          <Logo isIndex />
+          <UserBlock />
         </header>
 
         <div className="film-card__wrap">
@@ -62,36 +66,15 @@ function Main({movieData}) {
                 <span className="film-card__year">{released}</span>
               </p>
 
-              <div className="film-card__buttons">
-                <button
-                  className="btn btn--play film-card__button"
-                  type="button"
-                  onClick={() => history.push(AppRoute.DEV_PLAYER)}
-                >
-                  <svg viewBox="0 0 19 19" width="19" height="19">
-                    <use xlinkHref="#play-s"></use>
-                  </svg>
-                  <span>Play</span>
-                </button>
-                <button
-                  className="btn btn--list film-card__button"
-                  type="button"
-                  onClick={() => history.push(AppRoute.LIST)}
-                >
-                  <svg viewBox="0 0 19 20" width="19" height="20">
-                    <use xlinkHref="#add"></use>
-                  </svg>
-                  <span>My list</span>
-                </button>
-              </div>
+              <ButtonsFilmCard isBtnPlay isBtnMyList idFilm={id}/>
             </div>
           </div>
         </div>
       </section>
 
       <div className="page-content">
-        <FilmsListByGenre />
-        <Footer />
+        <FilmListByGenre />
+        <Footer isIndex />
       </div>
     </React.Fragment>
   );
@@ -99,8 +82,30 @@ function Main({movieData}) {
 
 
 Main.propTypes = {
-  movieData: MovieDataProp,
+  posterMovieData: PropTypes.oneOfType([MovieDataProp, PropTypes.shape({})]).isRequired,
+  loadPosterMovie: PropTypes.func.isRequired,
+  loadMovies: PropTypes.func.isRequired,
+  isPosterMovieLoaded: PropTypes.bool.isRequired,
+  isMoviesLoaded: PropTypes.bool.isRequired,
 };
 
 
-export default Main;
+const mapDispatchToProps = (dispatch) => ({
+  loadPosterMovie() {
+    dispatch(fetchPosterMovie());
+  },
+
+  loadMovies() {
+    dispatch(fetchMovies());
+  },
+});
+
+const mapStateToProps = (state) => ({
+  posterMovieData: state.posterMovieData,
+  isPosterMovieLoaded: state.isPosterMovieLoaded,
+  isMoviesLoaded: state.isMoviesLoaded,
+});
+
+
+export { Main };
+export default connect(mapStateToProps, mapDispatchToProps)(Main);

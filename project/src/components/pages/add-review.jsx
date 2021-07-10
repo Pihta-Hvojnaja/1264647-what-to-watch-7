@@ -1,17 +1,42 @@
 
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { Link, useParams } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { ActionCreator } from '../../store/action';
+import { fetchMovie } from '../../store/api-actions';
+
+import PropTypes from 'prop-types';
 import MovieDataProp from './movie-data.prop';
 
-import { AppRoute } from '../../const';
+import { APIRoute, NumberFilmsShown } from '../../const';
 
+import LoadingScreen from '../loading-screen/loading-screen';
 import Logo from '../logo/logo';
+import UserBlock from '../user-block/user-block';
 import FormAddReview from '../form-add-review/form-add-review';
 
 
 function AddReview(props) {
-  const { posterImage, backgroundImage, name } = props.movieData;
+  const {
+    movieData,
+    loadMovie,
+    isMovieLoaded,
+    numberFilmsShown,
+    changingFilmList,
+  } = props;
 
+  const { posterImage, backgroundImage, name } = movieData;
+  const idFilm = useParams().id;
+
+  useEffect(() => {
+    if (!isMovieLoaded) {
+      loadMovie(idFilm);
+    }
+  });
+
+  if (!isMovieLoaded) {
+    return <LoadingScreen />;
+  }
 
   return(
     <section className="film-card film-card--full">
@@ -28,7 +53,17 @@ function AddReview(props) {
           <nav className="breadcrumbs">
             <ul className="breadcrumbs__list">
               <li className="breadcrumbs__item">
-                <Link to={AppRoute.DEV_FILM} className="breadcrumbs__link">{name}</Link>
+                <Link
+                  to={APIRoute.FILM(idFilm)}
+                  className="breadcrumbs__link"
+                  onClick={() => {
+                    if (numberFilmsShown !== NumberFilmsShown.FOR_MORE_LIKE_THIS) {
+                      changingFilmList(NumberFilmsShown.FOR_MORE_LIKE_THIS);
+                    }
+                  }}
+                >
+                  {name}
+                </Link>
               </li>
               <li className="breadcrumbs__item">
                 <Link className="breadcrumbs__link" to="#">Add review</Link>
@@ -36,16 +71,7 @@ function AddReview(props) {
             </ul>
           </nav>
 
-          <ul className="user-block">
-            <li className="user-block__item">
-              <div className="user-block__avatar">
-                <img src="img/avatar.jpg" alt="User avatar" width="63" height="63" />
-              </div>
-            </li>
-            <li className="user-block__item">
-              <a className="user-block__link" href="/#">Sign out</a>
-            </li>
-          </ul>
+          <UserBlock />
         </header>
 
         <div className="film-card__poster film-card__poster--small">
@@ -62,7 +88,31 @@ function AddReview(props) {
 }
 
 
-AddReview.propTypes = MovieDataProp;
+AddReview.propTypes = {
+  movieData: PropTypes.oneOfType([MovieDataProp, PropTypes.shape({})]).isRequired,
+  loadMovie: PropTypes.func.isRequired,
+  isMovieLoaded: PropTypes.bool.isRequired,
+  numberFilmsShown: PropTypes.number,
+  changingFilmList: PropTypes.func.isRequired,
+};
 
 
-export default AddReview;
+const mapDispatchToProps = (dispatch) => ({
+  loadMovie(id) {
+    dispatch(fetchMovie(id));
+  },
+
+  changingFilmList(maxCardsFilms) {
+    dispatch(ActionCreator.changingFilmList(maxCardsFilms));
+  },
+});
+
+const mapStateToProps = (state) => ({
+  movieData: state.movieData,
+  isMovieLoaded: state.isMovieLoaded,
+  numberFilmsShown: state.numberFilmsShown,
+});
+
+
+export { AddReview };
+export default connect(mapStateToProps, mapDispatchToProps)(AddReview);

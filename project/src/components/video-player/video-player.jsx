@@ -9,7 +9,7 @@ function VideoPlayer(props) {
     posterImage = 'img/player-poster.jpg',
     isPlaying,
     noSound,
-    stopPlayer,
+    onStopPlayer,
   } = props;
 
   const [isLoading, setIsLoading] = useState(false);
@@ -30,7 +30,7 @@ function VideoPlayer(props) {
 
   useEffect(() => {
     if (isPlaying && isLoading) {
-      videoRef.current.play().catch(() => stopPlayer && stopPlayer());
+      videoRef.current.play().catch(() => onStopPlayer && onStopPlayer());
       return;
     }
 
@@ -55,7 +55,7 @@ VideoPlayer.propTypes = {
   posterImage: PropTypes.string,
   isPlaying: PropTypes.bool.isRequired,
   noSound: PropTypes.bool,
-  stopPlayer: PropTypes.func,
+  onStopPlayer: PropTypes.func,
 };
 
 

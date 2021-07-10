@@ -1,14 +1,36 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { connect } from 'react-redux';
+import { useParams } from 'react-router-dom';
+
+import { fetchMovies } from '../../store/api-actions';
+
+import PropTypes from 'prop-types';
 import MovieDataProp from './movie-data.prop';
 
+import LoadingScreen from '../loading-screen/loading-screen';
 import VideoPlayer from '../video-player/video-player';
 import ButtonPlayContent from '../buttons-control/button-play-content';
 
 
-function Player(props) {
-  const { videoLink, backgroundImage } = props.movieData;
+function Player({moviesData, isMoviesLoaded, loadMovies}) {
+  const idFilm = useParams().id;
   const [isPlaying, setIsPlaying] = useState(true);
+
+
+  useEffect(() => {
+    if (!isMoviesLoaded) {
+      loadMovies();
+    }
+  });
+
+
+  if (!isMoviesLoaded) {
+    return <LoadingScreen />;
+  }
+
+  const movieData = moviesData.find((movie) => Number(movie.id) === Number(idFilm));
+  const { videoLink, backgroundImage } = movieData;
 
   return(
     <div className="player">
@@ -16,7 +38,7 @@ function Player(props) {
         videoLink={videoLink}
         isPlaying={isPlaying}
         posterImage={backgroundImage}
-        stopPlayer={() => setIsPlaying(false)}
+        onStopPlayer={() => setIsPlaying(false)}
       />
 
       <button type="button" className="player__exit">Exit</button>
@@ -55,7 +77,24 @@ function Player(props) {
 }
 
 
-Player.propTypes = MovieDataProp;
+Player.propTypes = {
+  moviesData: PropTypes.oneOfType([PropTypes.arrayOf(MovieDataProp), PropTypes.arrayOf(PropTypes.object)]).isRequired,
+  isMoviesLoaded: PropTypes.bool.isRequired,
+  loadMovies: PropTypes.func.isRequired,
+};
 
 
-export default Player;
+const mapDispatchToProps = (dispatch) => ({
+  loadMovies() {
+    dispatch(fetchMovies());
+  },
+});
+
+const mapStateToProps = (state) => ({
+  moviesData: state.moviesData,
+  isMoviesLoaded: state.isMoviesLoaded,
+});
+
+
+export { Player };
+export default connect(mapStateToProps, mapDispatchToProps)(Player);
