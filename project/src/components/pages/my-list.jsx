@@ -8,38 +8,31 @@ import MovieDataProp from './movie-data.prop';
 import { NumberFilmsShown } from '../../const';
 
 import Logo from '../logo/logo';
-import FilmsList from '../films-list/films-list';
+import UserBlock from '../user-block/user-block';
+import FilmList from '../film-list/film-list';
 import Footer from '../footer/footer';
 
 
-function MyList({moviesData, changingFilmsList}) {
+function MyList(props) {
+  const { moviesData, numberFilmsShown, changingFilmList } = props;
 
-  useEffect(() => changingFilmsList(NumberFilmsShown.INITIAL));
-
+  useEffect(() => {
+    if(numberFilmsShown !== NumberFilmsShown.NO_NUMBER) {
+      changingFilmList(NumberFilmsShown.NO_NUMBER);
+    }
+  });
 
   return(
     <div className="user-page">
       <header className="page-header user-page__head">
         <Logo />
-
         <h1 className="page-title user-page__title">My list</h1>
-
-        <ul className="user-block">
-          <li className="user-block__item">
-            <div className="user-block__avatar">
-              <img src="img/avatar.jpg" alt="User avatar" width="63" height="63" />
-            </div>
-          </li>
-          <li className="user-block__item">
-            <a className="user-block__link" href="/#">Sign out</a>
-          </li>
-        </ul>
+        <UserBlock isMyList />
       </header>
 
       <section className="catalog">
         <h2 className="catalog__title visually-hidden">Catalog</h2>
-
-        <FilmsList moviesData={moviesData}/>
+        <FilmList moviesData={moviesData}/>
       </section>
 
       <Footer />
@@ -50,16 +43,21 @@ function MyList({moviesData, changingFilmsList}) {
 
 MyList.propTypes = {
   moviesData: PropTypes.arrayOf(MovieDataProp).isRequired,
-  changingFilmsList: PropTypes.func.isRequired,
+  numberFilmsShown: PropTypes.number,
+  changingFilmList: PropTypes.func.isRequired,
 };
 
 
 const mapDispatchToProps = (dispatch) => ({
-  changingFilmsList(numberFilmsShown) {
-    dispatch(ActionCreator.changingFilmsList(numberFilmsShown));
+  changingFilmList(maxCardsFilms) {
+    dispatch(ActionCreator.changingFilmList(maxCardsFilms));
   },
+});
+
+const mapStateToProps = (state) => ({
+  numberFilmsShown: state.numberFilmsShown,
 });
 
 
 export { MyList };
-export default connect(null, mapDispatchToProps)(MyList);
+export default connect(mapStateToProps, mapDispatchToProps)(MyList);

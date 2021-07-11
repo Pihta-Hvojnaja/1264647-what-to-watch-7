@@ -1,41 +1,67 @@
 
 import React, { useEffect } from 'react';
-import { useHistory } from 'react-router-dom';
-import { Link } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { ActionCreator } from '../../store/action';
+import { fetchComments, fetchMovie, fetchRelatedMovies } from '../../store/api-actions';
+
 import PropTypes from 'prop-types';
 import MovieDataProp from './movie-data.prop';
 import CommentDataProp from './comment-data.prop';
 
-import { AppRoute } from '../../const';
-
 import { NumberFilmsShown } from '../../const';
 
+import LoadingScreen from '../loading-screen/loading-screen';
 import Logo from '../logo/logo';
+import UserBlock from '../user-block/user-block';
+import ButtonsFilmCard from '../buttons-film-card/buttons-film-card';
 import Tabs from '../tabs/tabs';
-import FilmsList from '../films-list/films-list';
+import FilmList from '../film-list/film-list';
 import Footer from '../footer/footer';
-
-
-/** Временная ф-ция. Список похожих фильмов мы получаем от сервера */
-const getRelatedMovies = (movieData, moviesData) =>
-  moviesData.filter((movie) => movie.genre === movieData.genre);
 
 
 function Film(props) {
   const {
     movieData,
-    moviesData,
-    comments,
-    changingFilmsList,
+    relatedMoviesData,
+    commentsData,
+    loadMovie,
+    loadRelatedMovies,
+    loadComments,
+    isMovieLoaded,
+    isCommentsLoaded,
+    isRelatedMoviesLoaded,
+    numberFilmsShown,
+    changingFilmList,
   } = props;
 
-  const { backgroundImage, name, genre, released } = movieData;
+  const { id, posterImage, backgroundImage, name, genre, released } = movieData;
+  const idFilm = useParams().id;
 
-  const history = useHistory();
-  useEffect(() => changingFilmsList(NumberFilmsShown.FOR_MORE_LIKE_THIS));
+  useEffect(() => {
+    if(numberFilmsShown !== NumberFilmsShown.FOR_MORE_LIKE_THIS) {
+      changingFilmList(NumberFilmsShown.FOR_MORE_LIKE_THIS);
+      return;
+    }
 
+    switch (true) {
+      case !isMovieLoaded:
+        return loadMovie(idFilm);
+      case !isCommentsLoaded:
+        return loadComments(idFilm);
+      case !isRelatedMoviesLoaded:
+        return loadRelatedMovies(idFilm);
+      default: break;
+    }
+  });
+
+  switch (true) {
+    case !isMovieLoaded:
+    case !isCommentsLoaded:
+    case !isRelatedMoviesLoaded:
+      return <LoadingScreen />;
+    default: break;
+  }
 
   return(
     <React.Fragment>
@@ -49,17 +75,7 @@ function Film(props) {
 
           <header className="page-header film-card__head">
             <Logo />
-
-            <ul className="user-block">
-              <li className="user-block__item">
-                <div className="user-block__avatar">
-                  <img src="img/avatar.jpg" alt="User avatar" width="63" height="63" />
-                </div>
-              </li>
-              <li className="user-block__item">
-                <a className="user-block__link" href="/#">Sign out</a>
-              </li>
-            </ul>
+            <UserBlock />
           </header>
 
           <div className="film-card__wrap">
@@ -70,29 +86,7 @@ function Film(props) {
                 <span className="film-card__year">{released}</span>
               </p>
 
-              <div className="film-card__buttons">
-                <button
-                  className="btn btn--play film-card__button"
-                  type="button"
-                  onClick={() => history.push(AppRoute.DEV_PLAYER)}
-                >
-                  <svg viewBox="0 0 19 19" width="19" height="19">
-                    <use xlinkHref="#play-s"></use>
-                  </svg>
-                  <span>Play</span>
-                </button>
-                <button
-                  className="btn btn--list film-card__button"
-                  type="button"
-                  onClick={() => history.push(AppRoute.LIST)}
-                >
-                  <svg viewBox="0 0 19 20" width="19" height="20">
-                    <use xlinkHref="#add"></use>
-                  </svg>
-                  <span>My list</span>
-                </button>
-                <Link to={AppRoute.DEV_REVIEW} className="btn film-card__button">Add review</Link>
-              </div>
+              <ButtonsFilmCard isBtnPlay isBtnMyList isBtnAddReview idFilm={id}/>
             </div>
           </div>
         </div>
@@ -100,13 +94,13 @@ function Film(props) {
         <div className="film-card__wrap film-card__translate-top">
           <div className="film-card__info">
             <div className="film-card__poster film-card__poster--big">
-              <img src="img/the-grand-budapest-hotel-poster.jpg" alt="The Grand Budapest Hotel poster" width="218" height="327" />
+              <img src={posterImage} alt={`${name} poster`} width="218" height="327" />
             </div>
 
             <div className="film-card__desc">
               <Tabs
                 movieData={movieData}
-                comments={comments}
+                comments={commentsData}
               />
             </div>
           </div>
@@ -117,8 +111,8 @@ function Film(props) {
         <section className="catalog catalog--like-this">
           <h2 className="catalog__title">More like this</h2>
 
-          <FilmsList
-            moviesData={getRelatedMovies(movieData, moviesData)}
+          <FilmList
+            moviesData={relatedMoviesData}
           />
         </section>
 
@@ -130,19 +124,48 @@ function Film(props) {
 
 
 Film.propTypes = {
-  movieData: MovieDataProp,
-  moviesData: PropTypes.arrayOf(MovieDataProp).isRequired,
-  comments: PropTypes.arrayOf(CommentDataProp).isRequired,
-  changingFilmsList: PropTypes.func.isRequired,
+  movieData: PropTypes.oneOfType([MovieDataProp, PropTypes.shape({})]).isRequired,
+  relatedMoviesData: PropTypes.oneOfType([PropTypes.arrayOf(MovieDataProp), PropTypes.arrayOf(PropTypes.object)]).isRequired,
+  commentsData: PropTypes.oneOfType([PropTypes.arrayOf(CommentDataProp), PropTypes.arrayOf(PropTypes.object)]).isRequired,
+  loadMovie: PropTypes.func.isRequired,
+  loadComments: PropTypes.func.isRequired,
+  loadRelatedMovies: PropTypes.func.isRequired,
+  isMovieLoaded: PropTypes.bool.isRequired,
+  isCommentsLoaded: PropTypes.bool.isRequired,
+  isRelatedMoviesLoaded: PropTypes.bool.isRequired,
+  numberFilmsShown: PropTypes.number,
+  changingFilmList: PropTypes.func.isRequired,
 };
 
 
 const mapDispatchToProps = (dispatch) => ({
-  changingFilmsList(numberFilmsShown) {
-    dispatch(ActionCreator.changingFilmsList(numberFilmsShown));
+  loadMovie(id) {
+    dispatch(fetchMovie(id));
   },
+
+  loadComments(id) {
+    dispatch(fetchComments(id));
+  },
+
+  loadRelatedMovies(id) {
+    dispatch(fetchRelatedMovies(id));
+  },
+
+  changingFilmList(maxCardsFilms) {
+    dispatch(ActionCreator.changingFilmList(maxCardsFilms));
+  },
+});
+
+const mapStateToProps = (state) => ({
+  movieData: state.movieData,
+  relatedMoviesData: state.relatedMoviesData,
+  commentsData: state.commentsData,
+  isMovieLoaded: state.isMovieLoaded,
+  isCommentsLoaded: state.isCommentsLoaded,
+  isRelatedMoviesLoaded: state.isRelatedMoviesLoaded,
+  numberFilmsShown: state.numberFilmsShown,
 });
 
 
 export { Film };
-export default connect(null, mapDispatchToProps)(Film);
+export default connect(mapStateToProps, mapDispatchToProps)(Film);
