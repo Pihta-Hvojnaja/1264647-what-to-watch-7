@@ -11,9 +11,17 @@ import ButtonShowMore from '../button-show-more/button-show-more';
 function FilmList(props) {
   const { moviesData, numberFilmsShown, isButton = false } = props;
 
+  if (moviesData.length === 0) {
+
+    return (
+      <h3 style={{height: '100px', textAlign: 'center'}} >
+        Alas, the list is empty! &#128557;
+      </h3>
+    );
+  }
+
   const clippedMoviesData = numberFilmsShown ?
     moviesData.slice(0, numberFilmsShown) : moviesData;
-
 
   return (
     <React.Fragment>
@@ -40,7 +48,7 @@ function FilmList(props) {
 
 
 FilmList.propTypes = {
-  moviesData: PropTypes.arrayOf(MovieDataProp).isRequired,
+  moviesData: PropTypes.oneOfType([PropTypes.arrayOf(MovieDataProp), PropTypes.array]).isRequired,
   numberFilmsShown: PropTypes.number,
   isButton: PropTypes.bool,
 };

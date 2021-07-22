@@ -1,34 +1,126 @@
 
-import React from 'react';
+import React, { useRef, useState } from 'react';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { ActionCreator } from '../../store/action';
+import { login } from '../../store/api-actions';
 
+import { NumberFilmsShown, MessageError } from '../../const';
+import { checkLoginFormError } from '../../utils/check-login-form-error';
+
+import Toast from '../toast/toast';
 import Logo from '../logo/logo';
 import Footer from '../footer/footer';
 
 
-function SignIn() {
+const CLASS_NAME_ERROR = 'sign-in__field--error';
+
+const defaultError = {
+  login: false,
+  password: false,
+  message: '',
+};
+
+
+function SignIn(props) {
+  const {
+    onSubmit,
+    numberFilmsShown,
+    changeFilmList,
+  } = props;
+
+  const [error, setError] = useState(defaultError);
+
+  const loginRef = useRef();
+  const passwordRef = useRef();
+
+
+  const messageElement = error.message ?
+    (<div className="sign-in__message"><p>{error.message}</p></div>) : error.message;
+
+
+  const getClassNameError = (errorElement) => `sign-in__field ${errorElement && CLASS_NAME_ERROR}`;
+
+
+  const handleSubmit = (evt) => {
+    evt.preventDefault();
+    const loginElement = loginRef.current;
+    const passwordElement = passwordRef.current;
+    const newError = checkLoginFormError(loginElement, passwordElement );
+
+    if (!newError.message) {
+      onSubmit({
+        login: loginElement.value,
+        password: passwordElement.value,
+      });
+
+      (numberFilmsShown !== NumberFilmsShown.FOR_GENRE) &&
+        changeFilmList(NumberFilmsShown.FOR_GENRE);
+      return;
+    }
+
+    setError(newError);
+  };
+
 
   return(
     <div className="user-page">
+      <Toast message={MessageError.LOGIN}/>
       <header className="page-header user-page__head">
         <Logo />
-
         <h1 className="page-title user-page__title">Sign in</h1>
       </header>
 
       <div className="sign-in user-page__content">
-        <form action="#" className="sign-in__form">
+        <form
+          onSubmit={handleSubmit}
+          action="#"
+          className={'sign-in__form'}
+          noValidate
+        >
+          {messageElement}
           <div className="sign-in__fields">
-            <div className="sign-in__field">
-              <input className="sign-in__input" type="email" placeholder="Email address" name="user-email" id="user-email" />
-              <label className="sign-in__label visually-hidden" htmlFor="user-email">Email address</label>
+
+            <div className={getClassNameError(error.login)}>
+              <input
+                ref={loginRef}
+                className={`sign-in__input ${error.login && 'shake'}`}
+                type="email"
+                placeholder="Email address"
+                name="user-email"
+                id="user-email"
+                required
+              />
+              <label className="sign-in__label visually-hidden" htmlFor="user-email">
+                Email address
+              </label>
             </div>
-            <div className="sign-in__field">
-              <input className="sign-in__input" type="password" placeholder="Password" name="user-password" id="user-password" />
-              <label className="sign-in__label visually-hidden" htmlFor="user-password">Password</label>
+
+            <div className={getClassNameError(error.password)}>
+              <input
+                ref={passwordRef}
+                id="user-password"
+                className={`sign-in__input ${error.password && 'shake'}`}
+                type="password"
+                placeholder="Password"
+                name="user-password"
+                minLength="3"
+                maxLength="20"
+                required
+              />
+              <label className="sign-in__label visually-hidden" htmlFor="user-password">
+                Password
+              </label>
             </div>
           </div>
+
           <div className="sign-in__submit">
-            <button className="sign-in__btn" type="submit">Sign in</button>
+            <button
+              className="sign-in__btn"
+              type="submit"
+            >
+              Sign in
+            </button>
           </div>
         </form>
       </div>
@@ -39,4 +131,27 @@ function SignIn() {
 }
 
 
-export default SignIn;
+SignIn.propTypes = {
+  onSubmit: PropTypes.func.isRequired,
+  changeFilmList: PropTypes.func.isRequired,
+  numberFilmsShown: PropTypes.number,
+};
+
+
+const mapDispatchToProps = (dispatch) => ({
+  onSubmit(authData) {
+    dispatch(login(authData));
+  },
+
+  changeFilmList(numberFilmsShown) {
+    dispatch(ActionCreator.changeFilmList(numberFilmsShown));
+  },
+});
+
+const mapStateToProps = (state) => ({
+  numberFilmsShown: state.numberFilmsShown,
+});
+
+
+export { SignIn };
+export default connect(mapStateToProps, mapDispatchToProps)(SignIn);

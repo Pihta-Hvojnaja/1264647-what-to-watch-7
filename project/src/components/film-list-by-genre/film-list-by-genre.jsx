@@ -29,7 +29,7 @@ FilmListByGenre.propTypes = {
 
 
 const mapStateToProps = (state) => ({
-  filteredMoviesData: state.filteredMoviesData,
+  filteredMoviesData: state.data.filteredMoviesData,
 });
 
 

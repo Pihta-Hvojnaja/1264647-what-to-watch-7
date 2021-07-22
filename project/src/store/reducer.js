@@ -5,22 +5,36 @@ import { ActionType } from './action';
 
 
 const initialState = {
-  posterMovieData: {},
-  movieData: {},
-  moviesData: [{}],
-  relatedMoviesData: [{}],
-  commentsData: [{}],
-  isPosterMovieLoaded: false,
-  isMovieLoaded: false,
-  isMoviesLoaded: false,
-  isRelatedMoviesLoaded: false,
-  isCommentsLoaded: false,
+  data: {
+    posterMovieData: {},
+    movieData: {},
+    moviesData: [{}],
+    relatedMoviesData: [{}],
+    favoriteMoviesData: [{}],
+    commentsData: [{}],
+    filteredMoviesData: [{}],
+  },
+  loading: {
+    isPosterMovieLoaded: false,
+    isMovieLoaded: false,
+    isMoviesLoaded: false,
+    isRelatedMoviesLoaded: false,
+    isFavoriteMoviesLoaded: false,
+    isCommentsLoaded: false,
+  },
   genre: INITIAL_GENRE,
   genres: [''],
-  filteredMoviesData: [{}],
   idCurrentMovie: null,
   numberFilmsShown: NumberFilmsShown.FOR_GENRE,
   authorizationStatus: AuthorizationStatus.UNKNOWN,
+  authInfo: {
+    id: null,
+    email: '',
+    name: '',
+    avatarUrl: '',
+  },
+  isDeactiveForm: false,
+  error: '',
 };
 
 
@@ -29,42 +43,92 @@ const reducer = (state = initialState, action) => {
     case ActionType.LOAD_POSTER_MOVIE:
       return {
         ...state,
-        posterMovieData: action.payload,
-        isPosterMovieLoaded: true,
+        data: {
+          ...state.data,
+          posterMovieData: action.payload,
+        },
+        loading: {
+          ...state.loading,
+          isPosterMovieLoaded: true,
+        },
       };
     case ActionType.LOAD_MOVIE:
       return {
         ...state,
-        movieData: action.payload,
-        isMovieLoaded: true,
+        data: {
+          ...state.data,
+          movieData: action.payload,
+        },
+        loading: {
+          ...state.loading,
+          isMovieLoaded: true,
+        },
       };
     case ActionType.LOAD_MOVIES:
       return {
         ...state,
-        moviesData: action.payload,
-        filteredMoviesData: action.payload,
         genres: getGenresList(action.payload),
-        isMoviesLoaded: true,
+        data: {
+          ...state.data,
+          moviesData: action.payload,
+          filteredMoviesData: action.payload,
+        },
+        loading: {
+          ...state.loading,
+          isMoviesLoaded: true,
+        },
       };
 
     case ActionType.LOAD_RELATED_MOVIES:
       return {
         ...state,
-        relatedMoviesData: action.payload,
-        isRelatedMoviesLoaded: true,
+        data: {
+          ...state.data,
+          relatedMoviesData: action.payload,
+        },
+        loading: {
+          ...state.loading,
+          isRelatedMoviesLoaded: true,
+        },
+      };
+    case ActionType.LOAD_FAVORITE_MOVIES:
+      return {
+        ...state,
+        data: {
+          ...state.data,
+          favoriteMoviesData: action.payload,
+        },
+        loading: {
+          ...state.loading,
+          isFavoriteMoviesLoaded: true,
+        },
       };
     case ActionType.LOAD_COMMENTS:
       return {
         ...state,
-        commentsData: action.payload,
-        isCommentsLoaded: true,
+        data: {
+          ...state.data,
+          commentsData: action.payload,
+        },
+        loading: {
+          ...state.loading,
+          isCommentsLoaded: true,
+        },
       };
-    case ActionType.RESET_MOVIE_DATA:
+    case ActionType.CHANGING_FORM_STATUS:
       return {
         ...state,
-        isMovieLoaded: false,
-        isCommentsLoaded: false,
-        isRelatedMoviesLoaded: false,
+        isDeactiveForm: action.payload,
+      };
+    case ActionType.RESET_DATA:
+      return {
+        ...state,
+        loading: {
+          ...state.loading,
+          isMovieLoaded: false,
+          isCommentsLoaded: false,
+          isRelatedMoviesLoaded: false,
+        },
         idCurrentMovie: action.payload,
       };
     case ActionType.REQUIRED_AUTHORIZATION:
@@ -72,10 +136,16 @@ const reducer = (state = initialState, action) => {
         ...state,
         authorizationStatus: action.payload,
       };
+    case ActionType.SAVING_DATA_USER:
+      return {
+        ...state,
+        authInfo: action.payload,
+      };
     case ActionType.LOGOUT:
       return {
         ...state,
         authorizationStatus: AuthorizationStatus.NO_AUTH,
+        authInfo: {},
       };
     case ActionType.CHANGING_GENRE:
       return {
@@ -85,13 +155,29 @@ const reducer = (state = initialState, action) => {
     case ActionType.CREATING_MOVIES:
       return {
         ...state,
-        filteredMoviesData: action.payload,
+        data: {
+          ...state.data,
+          filteredMoviesData: action.payload,
+        },
         numberFilmsShown: NumberFilmsShown.FOR_GENRE,
       };
     case ActionType.CHANGING_FILM_LIST:
       return {
         ...state,
         numberFilmsShown: action.payload,
+      };
+    case ActionType.CHANGING_STATUS_MOVIE:
+      return {
+        ...state,
+        loading: {
+          ...state.loading,
+          isFavoriteMoviesLoaded: false,
+        },
+      };
+    case ActionType.WORKING_ON_THE_ERROR:
+      return {
+        ...state,
+        error: action.payload,
       };
     default:
       return state;

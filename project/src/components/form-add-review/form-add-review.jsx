@@ -1,82 +1,102 @@
 
 import React, { useState } from 'react';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+import { ActionCreator } from '../../store/action';
+import { sendComment } from '../../store/api-actions';
+
+import Toast from '../toast/toast';
+import ReviewRating from './review-rating';
+import ReviewText from './review-text';
+
+import { checkLengthText } from './utils';
 
 
 const DEFAULT_CHECKED_RADIO = 8;
 
-function FormAddReview() {
-  const [valueRating, setValueRating] = useState(DEFAULT_CHECKED_RADIO);
-  const [text, setText] = useState('');
+
+function FormAddReview(props) {
+  const {
+    idFilm,
+    postComment,
+    isDeactiveForm,
+    changeFormStatus,
+    error,
+  } = props;
+
+  const [text, setTex] = useState('');
+  const [rating, setRating] = useState(DEFAULT_CHECKED_RADIO);
+
+  const disabledButton = checkLengthText(text) || !rating;
+  const extraClass = error ? 'shake': error;
+
 
   return (
-    <form
-      action="#"
-      className="add-review__form"
-      onSubmit={(evt) => {
-        evt.preventDefault();
+    <React.Fragment>
+      <Toast />
 
-        return {
-          rating: valueRating,
-          comment: text,
-        };
-      }}
-    >
-      <div className="rating">
-        <div
-          className="rating__stars"
-          onChange={({target}) => {
-            setValueRating(target.value);
-          }}
-        >
-          <input className="rating__input" id="star-10" type="radio" name="rating" value="10" />
-          <label className="rating__label" htmlFor="star-10">Rating 10</label>
+      <form
+        action="#"
+        className={`add-review__form ${extraClass}`}
+        onSubmit={(evt) => {
+          evt.preventDefault();
+          changeFormStatus(true);
+          postComment({comment: text, rating: rating}, idFilm);
+        }}
+      >
+        <ReviewRating
+          checked={DEFAULT_CHECKED_RADIO}
+          disabled={isDeactiveForm}
+          onSetRating={setRating}
+        />
 
-          <input className="rating__input" id="star-9" type="radio" name="rating" value="9" />
-          <label className="rating__label" htmlFor="star-9">Rating 9</label>
+        <div className="add-review__text">
+          <ReviewText
+            disabled={isDeactiveForm}
+            onSetText={setTex}
+          />
 
-          <input className="rating__input" id="star-8" type="radio" name="rating" value="8" defaultChecked/>
-          <label className="rating__label" htmlFor="star-8">Rating 8</label>
-
-          <input className="rating__input" id="star-7" type="radio" name="rating" value="7" />
-          <label className="rating__label" htmlFor="star-7">Rating 7</label>
-
-          <input className="rating__input" id="star-6" type="radio" name="rating" value="6" />
-          <label className="rating__label" htmlFor="star-6">Rating 6</label>
-
-          <input className="rating__input" id="star-5" type="radio" name="rating" value="5" />
-          <label className="rating__label" htmlFor="star-5">Rating 5</label>
-
-          <input className="rating__input" id="star-4" type="radio" name="rating" value="4" />
-          <label className="rating__label" htmlFor="star-4">Rating 4</label>
-
-          <input className="rating__input" id="star-3" type="radio" name="rating" value="3" />
-          <label className="rating__label" htmlFor="star-3">Rating 3</label>
-
-          <input className="rating__input" id="star-2" type="radio" name="rating" value="2" />
-          <label className="rating__label" htmlFor="star-2">Rating 2</label>
-
-          <input className="rating__input" id="star-1" type="radio" name="rating" value="1" />
-          <label className="rating__label" htmlFor="star-1">Rating 1</label>
+          <div className="add-review__submit">
+            <button
+              className="add-review__btn"
+              type="submit"
+              disabled={disabledButton || isDeactiveForm}
+            >
+              Post
+            </button>
+          </div>
         </div>
-      </div>
-
-      <div className="add-review__text">
-        <textarea
-          className="add-review__textarea"
-          name="review-text" id="review-text"
-          placeholder="Review text"
-          onChange={({target}) => {
-            setText(target.value);
-          }}
-        >
-        </textarea>
-        <div className="add-review__submit">
-          <button className="add-review__btn" type="submit">Post</button>
-        </div>
-      </div>
-    </form>
+      </form>
+    </React.Fragment>
   );
 }
 
 
-export default FormAddReview;
+FormAddReview.propTypes = {
+  idFilm: PropTypes.string.isRequired,
+  postComment: PropTypes.func.isRequired,
+  isDeactiveForm: PropTypes.bool.isRequired,
+  changeFormStatus: PropTypes.func.isRequired,
+  error: PropTypes.string.isRequired,
+};
+
+
+const mapDispatchToProps = (dispatch) => ({
+  postComment(comment, idFilm) {
+    dispatch(sendComment(comment, idFilm));
+  },
+
+  changeFormStatus(boolValue) {
+    dispatch(ActionCreator.changeFormStatus(boolValue));
+  },
+});
+
+
+const mapStateToProps = (state) => ({
+  isDeactiveForm: state.isDeactiveForm,
+  error: state.error,
+});
+
+
+export { FormAddReview };
+export default connect(mapStateToProps, mapDispatchToProps)(FormAddReview);

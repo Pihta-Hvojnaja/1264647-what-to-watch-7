@@ -1,6 +1,8 @@
 import React from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { APIRoute } from '../../const';
+import { AppRoute } from '../../const';
+
+import { getRoute } from '../../utils/get-route';
 
 
 function ButtonAddReview() {
@@ -8,7 +10,7 @@ function ButtonAddReview() {
 
   return(
     <Link
-      to={APIRoute.REVIEW(idCurrentFilm)}
+      to={getRoute(AppRoute.REVIEW, idCurrentFilm)}
       className="btn film-card__button"
     >
       Add review

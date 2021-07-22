@@ -1,54 +1,36 @@
 
 import React from 'react';
-import { Link, useHistory } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { AppRoute, NumberFilmsShown } from '../../const';
-import { ActionCreator } from '../../store/action';
 import PropTypes from 'prop-types';
 
+import { isCheckedAuth } from '../../utils/isCheckedAuth';
+import UserBlockOut from './user-block-out';
+import UserBlockIn from './user-block-in';
 
-function UserBlock({changingFilmList, isMyList}) {
 
-  const history = useHistory();
+function UserBlock({authorizationStatus, isMyList}) {
 
   return (
-    <ul className="user-block">
-      <li className="user-block__item">
-        <div className="user-block__avatar">
-          <img
-            src="img/avatar.jpg"
-            alt="User avatar"
-            width="63"
-            height="63"
-            onClick={() => {
-              if (!isMyList) {
-                changingFilmList(NumberFilmsShown.NO_NUMBER);
-                history.push(AppRoute.MY_LIST);
-              }
-            }}
-          />
-        </div>
-      </li>
-      <li className="user-block__item">
-        <Link to="/" className="user-block__link">Sign out</Link>
-      </li>
-    </ul>
+    isCheckedAuth(authorizationStatus) ?
+      <UserBlockOut /> : <UserBlockIn isMyList={isMyList}/>
   );
 }
 
 
 UserBlock.propTypes = {
-  changingFilmList: PropTypes.func.isRequired,
+  authorizationStatus: PropTypes.string.isRequired,
   isMyList: PropTypes.bool,
 };
 
+UserBlock.defaultProps = {
+  isMyList: false,
+};
 
-const mapDispatchToProps = (dispatch) => ({
-  changingFilmList(maxCardsFilms) {
-    dispatch(ActionCreator.changingFilmList(maxCardsFilms));
-  },
+
+const mapStateToProps = (state) => ({
+  authorizationStatus: state.authorizationStatus,
 });
 
 
 export { UserBlock };
-export default connect(null, mapDispatchToProps)(UserBlock);
+export default connect(mapStateToProps, null)(UserBlock);

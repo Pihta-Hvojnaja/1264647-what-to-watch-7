@@ -8,7 +8,7 @@ import PropTypes from 'prop-types';
 import { NumberFilmsShown } from '../../const';
 
 
-function ButtonShowMore({numberFilmsShown, changingFilmList}) {
+function ButtonShowMore({numberFilmsShown, changeFilmList}) {
 
   return(
     <div className="catalog__more">
@@ -17,7 +17,7 @@ function ButtonShowMore({numberFilmsShown, changingFilmList}) {
         type="button"
         onClick={(evt) => {
           evt.preventDefault();
-          changingFilmList(numberFilmsShown + NumberFilmsShown.FOR_GENRE);
+          changeFilmList(numberFilmsShown + NumberFilmsShown.FOR_GENRE);
         }}
       >
         Show more
@@ -29,13 +29,13 @@ function ButtonShowMore({numberFilmsShown, changingFilmList}) {
 
 ButtonShowMore.propTypes = {
   numberFilmsShown: PropTypes.number,
-  changingFilmList: PropTypes.func.isRequired,
+  changeFilmList: PropTypes.func.isRequired,
 };
 
 
 const mapDispatchToProps = (dispatch) => ({
-  changingFilmList(numberFilmsShown) {
-    dispatch(ActionCreator.changingFilmList(numberFilmsShown));
+  changeFilmList(numberFilmsShown) {
+    dispatch(ActionCreator.changeFilmList(numberFilmsShown));
   },
 });
 

@@ -59,28 +59,13 @@ export const adaptMovieToServer = (dataMovie) => {
 export const adaptAuthInfoToClient = (dataAuthInfo) => {
   const adaptedDataAuthInfo = Object.assign(
     {},
-    ...dataAuthInfo,
     {
+      id: dataAuthInfo.id,
+      email: dataAuthInfo.email,
+      name: dataAuthInfo.name,
       avatarUrl: dataAuthInfo.avatar_url,
     },
   );
-
-  delete adaptedDataAuthInfo.avatar_url;
-
-  return adaptedDataAuthInfo;
-};
-
-
-export const adaptAuthInfoToServer = (dataAuthInfo) => {
-  const adaptedDataAuthInfo = Object.assign(
-    {},
-    ...dataAuthInfo,
-    {
-      'avatar_url': dataAuthInfo.avatarUrl,
-    },
-  );
-
-  delete adaptedDataAuthInfo.avatarUrl;
 
   return adaptedDataAuthInfo;
 };

@@ -91,8 +91,8 @@ const mapDispatchToProps = (dispatch) => ({
 });
 
 const mapStateToProps = (state) => ({
-  moviesData: state.moviesData,
-  isMoviesLoaded: state.isMoviesLoaded,
+  moviesData: state.data.moviesData,
+  isMoviesLoaded: state.loading.isMoviesLoaded,
 });
 
 
