@@ -10,8 +10,8 @@ import MovieDataProp from '../pages/movie-data.prop';
 function GenreList(props) {
   const {
     moviesData,
-    changingGenre,
-    creatingMovies,
+    changeGenre,
+    createMovies,
     currentGenre,
     genres,
   } = props;
@@ -37,8 +37,8 @@ function GenreList(props) {
                   const element = evt.target;
                   evt.preventDefault();
                   if (element.id !== currentGenre) {
-                    creatingMovies(moviesData, element.id);
-                    changingGenre(element.id);
+                    createMovies(moviesData, element.id);
+                    changeGenre(element.id);
                   }
                 }}
               >
@@ -55,27 +55,27 @@ function GenreList(props) {
 
 GenreList.propTypes = {
   moviesData: PropTypes.arrayOf(MovieDataProp).isRequired,
-  changingGenre: PropTypes.func.isRequired,
-  creatingMovies: PropTypes.func.isRequired,
+  changeGenre: PropTypes.func.isRequired,
+  createMovies: PropTypes.func.isRequired,
   currentGenre: PropTypes.string.isRequired,
   genres: PropTypes.arrayOf(PropTypes.string).isRequired,
 };
 
 
 const mapDispatchToProps = (dispatch) => ({
-  changingGenre(currentGenre) {
-    dispatch(ActionCreator.changingGenre(currentGenre));
+  changeGenre(currentGenre) {
+    dispatch(ActionCreator.changeGenre(currentGenre));
   },
 
-  creatingMovies(moviesData, currentGenre) {
-    dispatch(ActionCreator.creatingMovies(moviesData, currentGenre));
+  createMovies(moviesData, currentGenre) {
+    dispatch(ActionCreator.createMovies(moviesData, currentGenre));
   },
 });
 
 const mapStateToProps = (state) => ({
   currentGenre: state.genre,
   genres: state.genres,
-  moviesData: state.moviesData,
+  moviesData: state.data.moviesData,
 });
 
 

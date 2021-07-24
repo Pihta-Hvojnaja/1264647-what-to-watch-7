@@ -1,11 +1,11 @@
 
 import React  from 'react';
-import { BrowserRouter, Switch, Route } from 'react-router-dom';
-import PropTypes from 'prop-types';
-import MovieDataProp from '../pages/movie-data.prop';
+import { Router as BrowserRouter, Switch, Route } from 'react-router-dom';
+import browserHistory from '../../browser-history';
 
 import { AppRoute } from '../../const';
 
+import PrivateRoute from '../private-route/private-route';
 import Main from '../pages/main';
 import SignIn from '../pages/sign-in';
 import MyList from '../pages/my-list';
@@ -15,14 +15,10 @@ import Player from '../pages/player';
 import NotFoundScreen from '../not-found-screen/not-found-screen';
 
 
-function App(props) {
-  const {
-    moviesData,
-  } = props;
-
+function App() {
 
   return (
-    <BrowserRouter>
+    <BrowserRouter history={browserHistory}>
       <Switch>
         <Route exact path={AppRoute.ROOT}>
           <Main />
@@ -32,20 +28,28 @@ function App(props) {
           <SignIn />
         </Route>
 
-        <Route exact path={AppRoute.MY_LIST}>
-          <MyList moviesData={moviesData} />
-        </Route>
+        <PrivateRoute
+          exact
+          path={AppRoute.MY_LIST}
+          render={() => <MyList />}
+        />
 
         <Route exact path={AppRoute.FILM}>
           <Film />
         </Route>
 
-        <Route exact path={AppRoute.REVIEW}>
-          <AddReview />
-        </Route>
+        <PrivateRoute
+          exact
+          path={AppRoute.REVIEW}
+          render={() => <AddReview />}
+        />
 
         <Route exact path={AppRoute.PLAYER}>
           <Player />
+        </Route>
+
+        <Route exact path={AppRoute.ERROR}>
+          <NotFoundScreen />
         </Route>
 
         <Route>
@@ -55,11 +59,6 @@ function App(props) {
     </BrowserRouter>
   );
 }
-
-
-App.propTypes = {
-  moviesData: PropTypes.arrayOf(MovieDataProp).isRequired,
-};
 
 
 export default App;

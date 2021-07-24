@@ -6,12 +6,17 @@ import { fetchPosterMovie, fetchMovies } from '../../store/api-actions';
 import PropTypes from 'prop-types';
 import MovieDataProp from './movie-data.prop';
 
+import { SourceData } from '../../const';
+
 import LoadingScreen from '../loading-screen/loading-screen';
-import Logo from '../logo/logo';
-import UserBlock from '../user-block/user-block';
+import Toast from '../toast/toast';
+import HeaderPage from '../header/header-page';
 import ButtonsFilmCard from '../buttons-film-card/buttons-film-card';
 import FilmListByGenre from '../film-list-by-genre/film-list-by-genre';
 import Footer from '../footer/footer';
+
+
+let isDataLoaded = false;
 
 
 function Main(props) {
@@ -27,10 +32,15 @@ function Main(props) {
 
   useEffect(() => {
     switch (true) {
-      case !isPosterMovieLoaded:
-        return loadPosterMovie();
-      case !isMoviesLoaded:
-        return loadMovies();
+      case !isPosterMovieLoaded && !isMoviesLoaded:
+        loadPosterMovie();
+        loadMovies();
+        isDataLoaded = true;
+        break;
+      case !isDataLoaded:
+        !isPosterMovieLoaded && loadPosterMovie();
+        !isMoviesLoaded && loadMovies();
+        break;
       default: break;
     }
   });
@@ -42,16 +52,14 @@ function Main(props) {
   return(
     <React.Fragment>
       <section className="film-card">
+        <Toast />
         <div className="film-card__bg">
           <img src={backgroundImage} alt={name} />
         </div>
 
         <h1 className="visually-hidden">WTW</h1>
 
-        <header className="page-header film-card__head">
-          <Logo isIndex />
-          <UserBlock />
-        </header>
+        <HeaderPage isIndex />
 
         <div className="film-card__wrap">
           <div className="film-card__info">
@@ -66,7 +74,12 @@ function Main(props) {
                 <span className="film-card__year">{released}</span>
               </p>
 
-              <ButtonsFilmCard isBtnPlay isBtnMyList idFilm={id}/>
+              <ButtonsFilmCard
+                isBtnPlay
+                isBtnMyList
+                idFilm={id}
+                sourceData={SourceData.POSTER_MOVIE}
+              />
             </div>
           </div>
         </div>
@@ -101,9 +114,9 @@ const mapDispatchToProps = (dispatch) => ({
 });
 
 const mapStateToProps = (state) => ({
-  posterMovieData: state.posterMovieData,
-  isPosterMovieLoaded: state.isPosterMovieLoaded,
-  isMoviesLoaded: state.isMoviesLoaded,
+  posterMovieData: state.data.posterMovieData,
+  isPosterMovieLoaded: state.loading.isPosterMovieLoaded,
+  isMoviesLoaded: state.loading.isMoviesLoaded,
 });
 
 

@@ -15,9 +15,9 @@ function Logo(props) {
     className = 'logo__link',
     moviesData,
     genre,
-    changingGenre,
-    creatingMovies,
-    changingFilmList,
+    changeGenre,
+    createMovies,
+    changeFilmList,
     isIndex,
   } = props;
 
@@ -30,10 +30,10 @@ function Logo(props) {
             evt.preventDefault();
           }
           if (genre !== INITIAL_GENRE) {
-            changingGenre(INITIAL_GENRE);
-            creatingMovies(moviesData, INITIAL_GENRE);
+            changeGenre(INITIAL_GENRE);
+            createMovies(moviesData, INITIAL_GENRE);
           }
-          changingFilmList(NumberFilmsShown.FOR_GENRE);
+          changeFilmList(NumberFilmsShown.FOR_GENRE);
         }}
         to={AppRoute.ROOT}
         className={className}
@@ -51,28 +51,34 @@ Logo.propTypes = {
   className: PropTypes.string,
   moviesData: PropTypes.oneOfType([PropTypes.arrayOf(MovieDataProp), PropTypes.arrayOf(PropTypes.object)]).isRequired,
   genre: PropTypes.string.isRequired,
-  changingGenre: PropTypes.func.isRequired,
-  creatingMovies: PropTypes.func.isRequired,
-  changingFilmList: PropTypes.func.isRequired,
+  changeGenre: PropTypes.func.isRequired,
+  createMovies: PropTypes.func.isRequired,
+  changeFilmList: PropTypes.func.isRequired,
   isIndex: PropTypes.bool,
 };
 
+Logo.defaultProps = {
+  className: 'logo__link',
+  isIndex: false,
+};
+
+
 const mapDispatchToProps = (dispatch) => ({
-  changingGenre(currentGenre) {
-    dispatch(ActionCreator.changingGenre(currentGenre));
+  changeGenre(currentGenre) {
+    dispatch(ActionCreator.changeGenre(currentGenre));
   },
 
-  creatingMovies(moviesData, currentGenre) {
-    dispatch(ActionCreator.creatingMovies(moviesData, currentGenre));
+  createMovies(moviesData, currentGenre) {
+    dispatch(ActionCreator.createMovies(moviesData, currentGenre));
   },
 
-  changingFilmList(maxCardsFilms) {
-    dispatch(ActionCreator.changingFilmList(maxCardsFilms));
+  changeFilmList(maxCardsFilms) {
+    dispatch(ActionCreator.changeFilmList(maxCardsFilms));
   },
 });
 
 const mapStateToProps = (state) => ({
-  moviesData: state.moviesData,
+  moviesData: state.data.moviesData,
   genre: state.genre,
 });
 
