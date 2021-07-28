@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 const NUMBER_STARS = 10;
 
 
-function ReviewRating({disabled, checked, onSetRating}) {
+function ReviewRating({disabled, checked = null, onSetRating}) {
   const stars = new Array(NUMBER_STARS).fill('');
   const pointer = disabled && 'default';
 
@@ -59,4 +59,4 @@ ReviewRating.defaultProps = {
 };
 
 
-export default ReviewRating;
+export default React.memo(ReviewRating);

@@ -1,4 +1,4 @@
-
+import { createAction } from '@reduxjs/toolkit';
 import { getFilteredMoviesData } from '../filter';
 
 
@@ -24,91 +24,86 @@ export const ActionType = {
 };
 
 
-export const ActionCreator = {
-  loadPosterMovie: (posterMovie) => ({
-    type: ActionType.LOAD_POSTER_MOVIE,
-    payload: posterMovie,
-  }),
+export const loadPosterMovie = createAction(
+  ActionType.LOAD_POSTER_MOVIE,
+  (posterMovie) => ({payload: posterMovie}),
+);
 
-  loadMovie: (movie) => ({
-    type: ActionType.LOAD_MOVIE,
-    payload: movie,
-  }),
+export const loadMovie = createAction(
+  ActionType.LOAD_MOVIE,
+  (movie) => ({payload: movie}),
+);
 
-  loadMovies: (movies) => ({
-    type: ActionType.LOAD_MOVIES,
-    payload: movies,
-  }),
+export const loadMovies = createAction(
+  ActionType.LOAD_MOVIES,
+  (movies) => ({payload: movies}),
+);
 
-  loadRelatedMovies: (movies) => ({
-    type: ActionType.LOAD_RELATED_MOVIES,
-    payload: movies,
-  }),
+export const loadRelatedMovies = createAction(
+  ActionType.LOAD_RELATED_MOVIES,
+  (movies) => ({payload: movies}),
+);
 
-  loadFavoriteMovies: (movies) => ({
-    type: ActionType.LOAD_FAVORITE_MOVIES,
-    payload: movies,
-  }),
+export const loadFavoriteMovies = createAction(
+  ActionType.LOAD_FAVORITE_MOVIES,
+  (movies) => ({payload: movies}),
+);
 
-  loadComments: (comments) => ({
-    type: ActionType.LOAD_COMMENTS,
-    payload: comments,
-  }),
+export const loadComments = createAction(
+  ActionType.LOAD_COMMENTS,
+  (comments) => ({payload: comments}),
+);
 
-  sendComment: () => ({
-    type: ActionType.SENDING_COMMENT,
-  }),
+export const sendComment = createAction(ActionType.SENDING_COMMENT);
 
-  changeFormStatus: (boolValue) => ({
-    type: ActionType.CHANGING_FORM_STATUS,
-    payload: boolValue,
-  }),
+export const changeFormStatus = createAction(
+  ActionType.CHANGING_FORM_STATUS,
+  (boolValue) => ({payload: boolValue}),
+);
 
-  resetData: (idCurrentMovie) => ({
-    type: ActionType.RESET_DATA,
-    payload: idCurrentMovie,
-  }),
+export const resetData = createAction(
+  ActionType.RESET_DATA,
+  (idCurrentMovie) => ({payload: idCurrentMovie}),
+);
 
-  requireAuthorization: (status) => ({
-    type: ActionType.REQUIRED_AUTHORIZATION,
-    payload: status,
-  }),
+export const requireAuthorization = createAction(
+  ActionType.REQUIRED_AUTHORIZATION,
+  (status) => ({payload: status}),
+);
 
-  saveDataUser: (dataUser) => ({
-    type: ActionType.SAVING_DATA_USER,
-    payload: dataUser,
-  }),
+export const saveDataUser = createAction(
+  ActionType.SAVING_DATA_USER,
+  (dataUser) => ({payload: dataUser}),
+);
 
-  logout: () => ({
-    type: ActionType.LOGOUT,
-  }),
+export const logout = createAction(ActionType.LOGOUT);
 
-  changeGenre: (genre) => ({
-    type: ActionType.CHANGING_GENRE,
-    payload: genre,
-  }),
+export const changeGenre = createAction(
+  ActionType.CHANGING_GENRE,
+  (genre) => ({payload: genre}),
+);
 
-  createMovies: (moviesData, genre) => ({
-    type: ActionType.CREATING_MOVIES,
+export const createMovies = createAction(
+  ActionType.CREATING_MOVIES,
+  (moviesData, genre) => ({
     payload: getFilteredMoviesData(moviesData, genre),
   }),
+);
 
-  changeFilmList: (numberFilmsShown) => ({
-    type: ActionType.CHANGING_FILM_LIST,
-    payload: numberFilmsShown,
-  }),
+export const changeFilmList = createAction(
+  ActionType.CHANGING_FILM_LIST,
+  (numberFilmsShown) => ({payload: numberFilmsShown}),
+);
 
-  redirectToRoute: (url) => ({
-    type: ActionType.REDIRECT_TO_ROUTE,
-    payload: url,
-  }),
+export const redirectToRoute = createAction(
+  ActionType.REDIRECT_TO_ROUTE,
+  (url) => ({payload: url}),
+);
 
-  changeStatusMovie: () => ({
-    type: ActionType.CHANGING_STATUS_MOVIE,
-  }),
+export const changeStatusMovie = createAction(ActionType.CHANGING_STATUS_MOVIE);
 
-  changeError: (boolValue) => ({
-    type: ActionType.WORKING_ON_THE_ERROR,
-    payload: boolValue,
-  }),
-};
+export const changeError = createAction(
+  ActionType.WORKING_ON_THE_ERROR,
+  (boolValue) => ({payload: boolValue}),
+);
+

@@ -1,31 +1,26 @@
 import React from 'react';
-import { connect } from 'react-redux';
-
-import PropTypes from 'prop-types';
-import MovieDataProp from '../pages/movie-data.prop';
-
-import { SourceData } from '../../const';
-
+import { useSelector, useDispatch } from 'react-redux';
+import { getPosterMovieData, getMovieData } from '../../store/movie-data/selectors';
 import { changeStatusMovie } from '../../store/api-actions';
 
+import PropTypes from 'prop-types';
+import { SourceData } from '../../const';
 
-function ButtonMyList(props) {
-  const {
-    sourceData,
-    posterMovieData,
-    movieData,
-    changeStatusFilm,
-  } = props;
+
+function ButtonMyList({sourceData}) {
+  const posterMovieData = useSelector(getPosterMovieData);
+  const movieData = useSelector(getMovieData);
+  const dispatch = useDispatch();
 
   let status;
   let idFilm;
 
-  switch (true) {
-    case sourceData === SourceData.POSTER_MOVIE:
+  switch (sourceData) {
+    case SourceData.POSTER_MOVIE:
       status = posterMovieData.isFavorite ? 0 : 1;
       idFilm = posterMovieData.id;
       break;
-    case sourceData === SourceData.MOVIE:
+    case SourceData.MOVIE:
       status = movieData.isFavorite ? 0 : 1;
       idFilm = movieData.id;
       break;
@@ -52,7 +47,7 @@ function ButtonMyList(props) {
       className="btn btn--list film-card__button"
       type="button"
       onClick={() => {
-        changeStatusFilm(idFilm, status, sourceData);
+        dispatch(changeStatusMovie(idFilm, status, sourceData));
       }}
     >
       {status === 0 ? innerAdded : innerNoAdded}
@@ -64,23 +59,7 @@ function ButtonMyList(props) {
 
 ButtonMyList.propTypes = {
   sourceData: PropTypes.string.isRequired,
-  posterMovieData: PropTypes.shape(MovieDataProp).isRequired,
-  movieData: PropTypes.shape(MovieDataProp).isRequired,
-  changeStatusFilm: PropTypes.func.isRequired,
 };
 
 
-const mapDispatchToProps = (dispatch) => ({
-  changeStatusFilm(idFilm, status, sourceData) {
-    dispatch(changeStatusMovie(idFilm, status, sourceData));
-  },
-});
-
-const mapStateToProps = (state) => ({
-  posterMovieData: state.data.posterMovieData,
-  movieData: state.data.movieData,
-});
-
-
-export { ButtonMyList };
-export default connect(mapStateToProps, mapDispatchToProps)(ButtonMyList);
+export default ButtonMyList;

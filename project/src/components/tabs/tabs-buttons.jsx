@@ -44,4 +44,4 @@ TabsButtons.propTypes = {
 };
 
 
-export default TabsButtons;
+export default React.memo(TabsButtons);

@@ -7,7 +7,8 @@ import Logo from '../logo/logo';
 
 const CLASS_NAME_FOOTER = 'logo__link logo__link--light';
 
-function Footer({isIndex}) {
+
+function Footer({isIndex = false}) {
 
   return(
     <footer className="page-footer">
@@ -25,5 +26,9 @@ Footer.propTypes = {
   isIndex: PropTypes.bool,
 };
 
+Footer.defaultProps = {
+  isIndex: false,
+};
 
-export default Footer;
+
+export default React.memo(Footer);

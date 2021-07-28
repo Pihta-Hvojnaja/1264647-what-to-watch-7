@@ -1,6 +1,8 @@
 
 import React from 'react';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
+import { getNumberFilmsShown } from '../../store/movie-data/selectors';
+
 import PropTypes from 'prop-types';
 import MovieDataProp from '../pages/movie-data.prop';
 
@@ -8,8 +10,9 @@ import SmallFilmCard from '../small-film-card/small-film-card';
 import ButtonShowMore from '../button-show-more/button-show-more';
 
 
-function FilmList(props) {
-  const { moviesData, numberFilmsShown, isButton = false } = props;
+function FilmList({moviesData, isButton = false}) {
+  const numberFilmsShown = useSelector(getNumberFilmsShown);
+
 
   if (moviesData.length === 0) {
 
@@ -22,6 +25,7 @@ function FilmList(props) {
 
   const clippedMoviesData = numberFilmsShown ?
     moviesData.slice(0, numberFilmsShown) : moviesData;
+
 
   return (
     <React.Fragment>
@@ -49,15 +53,12 @@ function FilmList(props) {
 
 FilmList.propTypes = {
   moviesData: PropTypes.oneOfType([PropTypes.arrayOf(MovieDataProp), PropTypes.array]).isRequired,
-  numberFilmsShown: PropTypes.number,
   isButton: PropTypes.bool,
 };
 
+FilmList.defaultProps = {
+  isButton: false,
+};
 
-const mapStateToProps = (state) => ({
-  numberFilmsShown: state.numberFilmsShown,
-});
 
-
-export { FilmList };
-export default connect(mapStateToProps, null)(FilmList);
+export default FilmList;

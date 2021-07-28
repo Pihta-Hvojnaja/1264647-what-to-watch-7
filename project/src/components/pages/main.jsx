@@ -1,10 +1,9 @@
 
 import React, { useEffect } from 'react';
-import { connect } from 'react-redux';
-import { fetchPosterMovie, fetchMovies } from '../../store/api-actions';
 
-import PropTypes from 'prop-types';
-import MovieDataProp from './movie-data.prop';
+import { useSelector, useDispatch } from 'react-redux';
+import { getPosterMovieData, getIsPosterMovieLoaded, getIsMoviesLoaded } from '../../store/movie-data/selectors';
+import { fetchPosterMovie, fetchMovies } from '../../store/api-actions';
 
 import { SourceData } from '../../const';
 
@@ -19,27 +18,24 @@ import Footer from '../footer/footer';
 let isDataLoaded = false;
 
 
-function Main(props) {
-  const {
-    posterMovieData,
-    loadPosterMovie,
-    loadMovies,
-    isPosterMovieLoaded,
-    isMoviesLoaded,
-  } = props;
+function Main() {
+  const posterMovieData = useSelector(getPosterMovieData);
+  const isPosterMovieLoaded = useSelector(getIsPosterMovieLoaded);
+  const isMoviesLoaded = useSelector(getIsMoviesLoaded);
+  const dispatch = useDispatch();
 
   const { id, posterImage, backgroundImage, name, genre, released } = posterMovieData;
 
   useEffect(() => {
     switch (true) {
       case !isPosterMovieLoaded && !isMoviesLoaded:
-        loadPosterMovie();
-        loadMovies();
+        dispatch(fetchPosterMovie());
+        dispatch(fetchMovies());
         isDataLoaded = true;
         break;
       case !isDataLoaded:
-        !isPosterMovieLoaded && loadPosterMovie();
-        !isMoviesLoaded && loadMovies();
+        !isPosterMovieLoaded && dispatch(fetchPosterMovie());
+        !isMoviesLoaded && dispatch(fetchMovies());
         break;
       default: break;
     }
@@ -94,31 +90,4 @@ function Main(props) {
 }
 
 
-Main.propTypes = {
-  posterMovieData: PropTypes.oneOfType([MovieDataProp, PropTypes.shape({})]).isRequired,
-  loadPosterMovie: PropTypes.func.isRequired,
-  loadMovies: PropTypes.func.isRequired,
-  isPosterMovieLoaded: PropTypes.bool.isRequired,
-  isMoviesLoaded: PropTypes.bool.isRequired,
-};
-
-
-const mapDispatchToProps = (dispatch) => ({
-  loadPosterMovie() {
-    dispatch(fetchPosterMovie());
-  },
-
-  loadMovies() {
-    dispatch(fetchMovies());
-  },
-});
-
-const mapStateToProps = (state) => ({
-  posterMovieData: state.data.posterMovieData,
-  isPosterMovieLoaded: state.loading.isPosterMovieLoaded,
-  isMoviesLoaded: state.loading.isMoviesLoaded,
-});
-
-
-export { Main };
-export default connect(mapStateToProps, mapDispatchToProps)(Main);
+export default Main;

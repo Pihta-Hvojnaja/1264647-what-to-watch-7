@@ -1,13 +1,23 @@
 
 import React, { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { connect } from 'react-redux';
-import { ActionCreator } from '../../store/action';
-import { fetchComments, fetchMovie, fetchRelatedMovies } from '../../store/api-actions';
 
-import PropTypes from 'prop-types';
-import MovieDataProp from './movie-data.prop';
-import CommentDataProp from './comment-data.prop';
+import { useSelector, useDispatch } from 'react-redux';
+
+import {
+  getMovieData,
+  getRelatedMoviesData,
+  getCommentsData,
+  getIsMovieLoaded,
+  getIsCommentsLoaded,
+  getIsRelatedMoviesLoaded,
+  getNumberFilmsShown
+
+} from '../../store/movie-data/selectors';
+
+import { changeFilmList } from '../../store/action';
+
+import { fetchComments, fetchMovie, fetchRelatedMovies } from '../../store/api-actions';
 
 import { NumberFilmsShown, SourceData } from '../../const';
 
@@ -24,41 +34,36 @@ import Footer from '../footer/footer';
 let isDataLoaded = false;
 
 
-function Film(props) {
-  const {
-    movieData,
-    relatedMoviesData,
-    commentsData,
-    loadMovie,
-    loadRelatedMovies,
-    loadComments,
-    isMovieLoaded,
-    isCommentsLoaded,
-    isRelatedMoviesLoaded,
-    numberFilmsShown,
-    changeFilmList,
-  } = props;
+function Film() {
+  const movieData = useSelector(getMovieData);
+  const relatedMoviesData = useSelector(getRelatedMoviesData);
+  const commentsData = useSelector(getCommentsData);
+  const isMovieLoaded = useSelector(getIsMovieLoaded);
+  const isCommentsLoaded = useSelector(getIsCommentsLoaded);
+  const isRelatedMoviesLoaded = useSelector(getIsRelatedMoviesLoaded);
+  const numberFilmsShown = useSelector(getNumberFilmsShown);
+  const dispatch = useDispatch();
 
   const { id, posterImage, backgroundImage, name, genre, released } = movieData;
   const idFilm = useParams().id;
 
   useEffect(() => {
     if(numberFilmsShown !== NumberFilmsShown.FOR_SIMILAR) {
-      changeFilmList(NumberFilmsShown.FOR_SIMILAR);
+      dispatch(changeFilmList(NumberFilmsShown.FOR_SIMILAR));
       return;
     }
 
     switch (true) {
       case !isMovieLoaded && !isCommentsLoaded && !isRelatedMoviesLoaded:
-        loadMovie(idFilm);
-        loadComments(idFilm);
-        loadRelatedMovies(idFilm);
+        dispatch(fetchMovie(idFilm));
+        dispatch(fetchComments(idFilm));
+        dispatch(fetchRelatedMovies(idFilm));
         isDataLoaded = true;
         break;
       case !isDataLoaded:
-        !isMovieLoaded && loadMovie(idFilm);
-        !isCommentsLoaded && loadComments(idFilm);
-        !isRelatedMoviesLoaded && loadRelatedMovies(idFilm);
+        !isMovieLoaded && dispatch(fetchMovie(idFilm));
+        !isCommentsLoaded && dispatch(fetchComments(idFilm));
+        !isRelatedMoviesLoaded && dispatch(fetchRelatedMovies(idFilm));
         break;
       default: break;
     }
@@ -139,53 +144,4 @@ function Film(props) {
 }
 
 
-Film.propTypes = {
-  movieData: PropTypes.oneOfType([MovieDataProp, PropTypes.shape({})]).isRequired,
-  relatedMoviesData: PropTypes.oneOfType([PropTypes.arrayOf(MovieDataProp), PropTypes.arrayOf(PropTypes.object)]).isRequired,
-  commentsData: PropTypes.oneOfType([PropTypes.arrayOf(CommentDataProp), PropTypes.arrayOf(PropTypes.object)]).isRequired,
-  loadMovie: PropTypes.func.isRequired,
-  loadComments: PropTypes.func.isRequired,
-  loadRelatedMovies: PropTypes.func.isRequired,
-  isMovieLoaded: PropTypes.bool.isRequired,
-  isCommentsLoaded: PropTypes.bool.isRequired,
-  isRelatedMoviesLoaded: PropTypes.bool.isRequired,
-  numberFilmsShown: PropTypes.number,
-  changeFilmList: PropTypes.func.isRequired,
-};
-
-Film.defaultProps ={
-  numberFilmsShown: null,
-};
-
-
-const mapDispatchToProps = (dispatch) => ({
-  loadMovie(idFilm) {
-    dispatch(fetchMovie(idFilm));
-  },
-
-  loadComments(idFilm) {
-    dispatch(fetchComments(idFilm));
-  },
-
-  loadRelatedMovies(idFilm) {
-    dispatch(fetchRelatedMovies(idFilm));
-  },
-
-  changeFilmList(maxCardsFilms) {
-    dispatch(ActionCreator.changeFilmList(maxCardsFilms));
-  },
-});
-
-const mapStateToProps = (state) => ({
-  movieData: state.data.movieData,
-  relatedMoviesData: state.data.relatedMoviesData,
-  commentsData: state.data.commentsData,
-  isMovieLoaded: state.loading.isMovieLoaded,
-  isCommentsLoaded: state.loading.isCommentsLoaded,
-  isRelatedMoviesLoaded: state.loading.isRelatedMoviesLoaded,
-  numberFilmsShown: state.numberFilmsShown,
-});
-
-
-export { Film };
-export default connect(mapStateToProps, mapDispatchToProps)(Film);
+export default Film;

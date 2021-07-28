@@ -1,25 +1,21 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { connect } from 'react-redux';
-import { ActionCreator } from '../../store/action';
+
+import { useSelector, useDispatch } from 'react-redux';
+import { getMoviesData } from '../../store/movie-data/selectors';
+import { getGenre } from '../../store/genre-filter/selectors';
+import { changeGenre, createMovies, changeFilmList } from '../../store/action';
 
 import PropTypes from 'prop-types';
-import MovieDataProp from '../pages/movie-data.prop';
 
 import { INITIAL_GENRE, NumberFilmsShown, AppRoute } from '../../const';
 
 
-function Logo(props) {
-  const {
-    className = 'logo__link',
-    moviesData,
-    genre,
-    changeGenre,
-    createMovies,
-    changeFilmList,
-    isIndex,
-  } = props;
+function Logo({className = 'logo__link', isIndex}) {
+  const moviesData = useSelector(getMoviesData);
+  const genre = useSelector(getGenre);
+  const dispatch = useDispatch();
 
 
   return (
@@ -30,10 +26,10 @@ function Logo(props) {
             evt.preventDefault();
           }
           if (genre !== INITIAL_GENRE) {
-            changeGenre(INITIAL_GENRE);
-            createMovies(moviesData, INITIAL_GENRE);
+            dispatch(changeGenre(INITIAL_GENRE));
+            dispatch(createMovies(moviesData, INITIAL_GENRE));
           }
-          changeFilmList(NumberFilmsShown.FOR_GENRE);
+          dispatch(changeFilmList(NumberFilmsShown.FOR_GENRE));
         }}
         to={AppRoute.ROOT}
         className={className}
@@ -49,11 +45,6 @@ function Logo(props) {
 
 Logo.propTypes = {
   className: PropTypes.string,
-  moviesData: PropTypes.oneOfType([PropTypes.arrayOf(MovieDataProp), PropTypes.arrayOf(PropTypes.object)]).isRequired,
-  genre: PropTypes.string.isRequired,
-  changeGenre: PropTypes.func.isRequired,
-  createMovies: PropTypes.func.isRequired,
-  changeFilmList: PropTypes.func.isRequired,
   isIndex: PropTypes.bool,
 };
 
@@ -63,25 +54,4 @@ Logo.defaultProps = {
 };
 
 
-const mapDispatchToProps = (dispatch) => ({
-  changeGenre(currentGenre) {
-    dispatch(ActionCreator.changeGenre(currentGenre));
-  },
-
-  createMovies(moviesData, currentGenre) {
-    dispatch(ActionCreator.createMovies(moviesData, currentGenre));
-  },
-
-  changeFilmList(maxCardsFilms) {
-    dispatch(ActionCreator.changeFilmList(maxCardsFilms));
-  },
-});
-
-const mapStateToProps = (state) => ({
-  moviesData: state.data.moviesData,
-  genre: state.genre,
-});
-
-
-export { Logo };
-export default connect(mapStateToProps, mapDispatchToProps)(Logo);
+export default Logo;

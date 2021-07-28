@@ -1,6 +1,9 @@
 
 import React from 'react';
-import { connect } from 'react-redux';
+
+import { useSelector } from 'react-redux';
+import { getAuthorizationStatus } from '../../store/user/selectors';
+
 import PropTypes from 'prop-types';
 
 import { isCheckedAuth } from '../../utils/isCheckedAuth';
@@ -8,7 +11,8 @@ import UserBlockOut from './user-block-out';
 import UserBlockIn from './user-block-in';
 
 
-function UserBlock({authorizationStatus, isMyList}) {
+function UserBlock({isMyList = false}) {
+  const authorizationStatus = useSelector(getAuthorizationStatus);
 
   return (
     isCheckedAuth(authorizationStatus) ?
@@ -18,7 +22,6 @@ function UserBlock({authorizationStatus, isMyList}) {
 
 
 UserBlock.propTypes = {
-  authorizationStatus: PropTypes.string.isRequired,
   isMyList: PropTypes.bool,
 };
 
@@ -27,10 +30,4 @@ UserBlock.defaultProps = {
 };
 
 
-const mapStateToProps = (state) => ({
-  authorizationStatus: state.authorizationStatus,
-});
-
-
-export { UserBlock };
-export default connect(mapStateToProps, null)(UserBlock);
+export default UserBlock;

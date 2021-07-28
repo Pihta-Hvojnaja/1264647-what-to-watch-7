@@ -9,4 +9,3 @@ export const getFilteredMoviesData = (moviesData, genre) => {
 
   return moviesData.filter((movieData) => movieData.genre === genre);
 };
-

@@ -1,10 +1,12 @@
 
 import React, { useState, useEffect } from 'react';
 import { Link, useRouteMatch, useHistory } from 'react-router-dom';
-import { connect } from 'react-redux';
-import { ActionCreator } from '../../store/action';
+
+import { useSelector, useDispatch } from 'react-redux';
+import { getIdCurrentMovie, getNumberFilmsShown } from '../../store/movie-data/selectors';
+import { changeFilmList, resetData } from '../../store/action';
+
 import MovieDataProp from '../pages/movie-data.prop';
-import PropTypes from 'prop-types';
 
 import { NumberFilmsShown, AppRoute } from '../../const';
 import { getRoute } from '../../utils/get-route';
@@ -15,11 +17,10 @@ import VideoPlayer from '../video-player/video-player';
 const DELAY = 1000;
 
 
-function SmallFilmCard(props) {
-  const {
-    movieData, resetData,
-    numberFilmsShown, changeFilmList, idCurrentMovie,
-  } = props;
+function SmallFilmCard({movieData}) {
+  const idCurrentMovie = useSelector(getIdCurrentMovie);
+  const numberFilmsShown = useSelector(getNumberFilmsShown);
+  const dispatch = useDispatch();
 
   const { id, name, previewImage, previewVideoLink } = movieData;
   const [idCurrentCard, setIdCurrentCard] = useState(null);
@@ -48,8 +49,11 @@ function SmallFilmCard(props) {
     if (currentAddress === address) {
       return;
     }
-    (idCurrentMovie !== id) && resetData(id);
-    (numberFilmsShown !== NumberFilmsShown.FOR_SIMILAR) && changeFilmList(NumberFilmsShown.FOR_SIMILAR);
+
+    (idCurrentMovie !== id) && dispatch(resetData(id));
+    (numberFilmsShown !== NumberFilmsShown.FOR_SIMILAR) &&
+      dispatch(changeFilmList(NumberFilmsShown.FOR_SIMILAR));
+
     history.push(address);
   };
 
@@ -89,34 +93,7 @@ function SmallFilmCard(props) {
 }
 
 
-SmallFilmCard.propTypes = {
-  movieData: MovieDataProp,
-  resetData: PropTypes.func.isRequired,
-  numberFilmsShown: PropTypes.number,
-  changeFilmList: PropTypes.func.isRequired,
-  idCurrentMovie: PropTypes.number,
-};
-
-SmallFilmCard.defaultProps = {
-  idCurrentMovie: null,
-};
+SmallFilmCard.propTypes = MovieDataProp;
 
 
-const mapDispatchToProps = (dispatch) => ({
-  resetData(idCurrentMovie) {
-    dispatch(ActionCreator.resetData(idCurrentMovie));
-  },
-
-  changeFilmList(numberFilmsShown) {
-    dispatch(ActionCreator.changeFilmList(numberFilmsShown));
-  },
-});
-
-const mapStateToProps = (state) => ({
-  numberFilmsShown: state.numberFilmsShown,
-  idCurrentMovie: state.idCurrentMovie,
-});
-
-
-export { SmallFilmCard };
-export default connect(mapStateToProps, mapDispatchToProps)(SmallFilmCard);
+export default SmallFilmCard;

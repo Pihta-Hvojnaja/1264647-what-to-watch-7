@@ -2,7 +2,7 @@
 import React from 'react';
 import movieDataProp from '../pages/movie-data.prop';
 
-import { reformatRuntime } from '../../utils/reformat-runtime';
+import { reformatRuntime } from '../../utils/reformat-time';
 
 
 function TabDetails({movieData}) {

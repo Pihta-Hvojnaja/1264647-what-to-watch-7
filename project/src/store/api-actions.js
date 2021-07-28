@@ -1,5 +1,21 @@
 
-import { ActionCreator } from './action';
+import {
+  changeError,
+  changeFormStatus,
+  changeStatusMovie as updateMovie,
+  loadComments,
+  loadFavoriteMovies,
+  loadMovie,
+  loadMovies,
+  loadPosterMovie,
+  loadRelatedMovies,
+  logout as closeSession,
+  redirectToRoute,
+  requireAuthorization,
+  saveDataUser,
+  sendComment as postComment
+} from './action';
+
 import { adaptMovieToClient, adaptAuthInfoToClient } from './adapter';
 import { AuthorizationStatus, APIRoute, AppRoute, SourceData, MessageError } from '../const';
 import { getRoute } from '../utils/get-route';
@@ -9,37 +25,37 @@ export const fetchPosterMovie = () => (dispatch, _getState, api) => (
   api.get(APIRoute.POSTER_MOVIE)
     .then(({data}) => {
       const adaptedData = adaptMovieToClient(data);
-      dispatch(ActionCreator.loadPosterMovie(adaptedData));
+      dispatch(loadPosterMovie(adaptedData));
     })
-    .catch(() => dispatch(ActionCreator.redirectToRoute(AppRoute.ERROR)))
+    .catch(() => dispatch(redirectToRoute(AppRoute.ERROR)))
 );
 
 export const fetchMovie = (idFilm) => (dispatch, _getState, api) => (
   api.get(getRoute(APIRoute.MOVIE, idFilm))
     .then(({data}) => {
       const adaptedData = adaptMovieToClient(data);
-      dispatch(ActionCreator.loadMovie(adaptedData));
+      dispatch(loadMovie(adaptedData));
     })
-    .catch(() => dispatch(ActionCreator.redirectToRoute(AppRoute.ERROR)))
+    .catch(() => dispatch(redirectToRoute(AppRoute.ERROR)))
 );
 
 export const fetchMovies = () => (dispatch, _getState, api) => (
   api.get(APIRoute.MOVIES)
     .then(({data}) => {
       const adaptedMoviesData = data.map((movie) => adaptMovieToClient(movie));
-      dispatch(ActionCreator.loadMovies(adaptedMoviesData));
+      dispatch(loadMovies(adaptedMoviesData));
     })
-    .catch(() => dispatch(ActionCreator.redirectToRoute(AppRoute.ERROR)))
+    .catch(() => dispatch(redirectToRoute(AppRoute.ERROR)))
 );
 
 export const fetchComments = (idFilm) => (dispatch, _getState, api) => (
   api.get(getRoute(APIRoute.COMMENTS, idFilm))
     .then(({data}) => {
-      dispatch(ActionCreator.loadComments(data));
+      dispatch(loadComments(data));
     })
     .catch(() => {
-      dispatch(ActionCreator.changeError(MessageError.LOAD_COMMENTS));
-      dispatch(ActionCreator.loadComments([]));
+      dispatch(changeError(MessageError.LOAD_COMMENTS));
+      dispatch(loadComments([]));
     })
 );
 
@@ -47,11 +63,11 @@ export const fetchRelatedMovies = (idFilm) => (dispatch, _getState, api) => (
   api.get(getRoute(APIRoute.SIMILAR_MOVIES, idFilm))
     .then(({data}) => {
       const adaptedMoviesData = data.map((movie) => adaptMovieToClient(movie));
-      dispatch(ActionCreator.loadRelatedMovies(adaptedMoviesData));
+      dispatch(loadRelatedMovies(adaptedMoviesData));
     })
     .catch(() => {
-      dispatch(ActionCreator.changeError(MessageError.LOAD_RELARED_MOVIES));
-      dispatch(ActionCreator.loadRelatedMovies([]));
+      dispatch(changeError(MessageError.LOAD_RELARED_MOVIES));
+      dispatch(loadRelatedMovies([]));
     })
 );
 
@@ -59,9 +75,9 @@ export const fetchFavoriteMovies = () => (dispatch, _getState, api) => (
   api.get(APIRoute.FAVORITE_MOVIES)
     .then(({data}) => {
       const adaptedMoviesData = data.map((movie) => adaptMovieToClient(movie));
-      dispatch(ActionCreator.loadFavoriteMovies(adaptedMoviesData));
+      dispatch(loadFavoriteMovies(adaptedMoviesData));
     })
-    .catch(() => dispatch(ActionCreator.redirectToRoute(AppRoute.ERROR)))
+    .catch(() => dispatch(redirectToRoute(AppRoute.ERROR)))
 );
 
 export const checkAuth = () => (dispatch, _getState, api) => (
@@ -69,12 +85,12 @@ export const checkAuth = () => (dispatch, _getState, api) => (
     .then(({data}) => {
       localStorage.setItem('token', data.token);
       localStorage.setItem('authorizationStatus', AuthorizationStatus.AUTH);
-      dispatch(ActionCreator.requireAuthorization(AuthorizationStatus.AUTH));
-      dispatch(ActionCreator.saveDataUser(adaptAuthInfoToClient(data)));
+      dispatch(requireAuthorization(AuthorizationStatus.AUTH));
+      dispatch(saveDataUser(adaptAuthInfoToClient(data)));
     })
     .catch(() => {
       localStorage.removeItem('authorizationStatus');
-      dispatch(ActionCreator.requireAuthorization(AuthorizationStatus.NO_AUTH));
+      dispatch(requireAuthorization(AuthorizationStatus.NO_AUTH));
     })
 );
 
@@ -83,13 +99,11 @@ export const login = ({login: email, password}) => (dispatch, _getState, api) =>
     .then(({data}) => {
       localStorage.setItem('token', data.token);
       localStorage.setItem('authorizationStatus', AuthorizationStatus.AUTH);
-      dispatch(ActionCreator.requireAuthorization(AuthorizationStatus.AUTH));
-      dispatch(ActionCreator.saveDataUser(adaptAuthInfoToClient(data)));
+      dispatch(requireAuthorization(AuthorizationStatus.AUTH));
+      dispatch(saveDataUser(adaptAuthInfoToClient(data)));
     })
-    .then(() => dispatch(ActionCreator.redirectToRoute(AppRoute.ROOT)))
-    .catch(() => {
-      dispatch(ActionCreator.changeError(MessageError.LOGIN));
-    })
+    .then(() => dispatch(redirectToRoute(AppRoute.ROOT)))
+    .catch(() => dispatch(changeError(MessageError.LOGIN)))
 );
 
 export const logout = () => (dispatch, _getState, api) => (
@@ -98,22 +112,22 @@ export const logout = () => (dispatch, _getState, api) => (
       localStorage.removeItem('token');
       localStorage.removeItem('authorizationStatus');
     })
-    .then(() => dispatch(ActionCreator.logout()))
+    .then(() => dispatch(closeSession()))
 );
 
 export const sendComment = (dataComment, idFilm) => (dispatch, _getState, api) => (
   api.post(getRoute(APIRoute.POST_COMMENT, idFilm), dataComment)
     .then(({data}) => {
-      dispatch(ActionCreator.sendComment());
-      dispatch(ActionCreator.loadComments(data));
+      dispatch(postComment());
+      dispatch(loadComments(data));
     })
     .then(() => {
-      dispatch(ActionCreator.redirectToRoute(getRoute(AppRoute.FILM, idFilm)));
-      dispatch(ActionCreator.changeFormStatus(false));
+      dispatch(redirectToRoute(getRoute(AppRoute.FILM, idFilm)));
+      dispatch(changeFormStatus(false));
     })
     .catch(() => {
-      dispatch(ActionCreator.changeFormStatus(false));
-      dispatch(ActionCreator.changeError(MessageError.POST_COMMENT));
+      dispatch(changeFormStatus(false));
+      dispatch(changeError(MessageError.POST_COMMENT));
     })
 );
 
@@ -122,16 +136,16 @@ export const changeStatusMovie = (idFilm, status, sourceData) => (dispatch, _get
     .then(({data}) => {
       const adaptedData = adaptMovieToClient(data);
 
-      dispatch(ActionCreator.changeStatusMovie());
+      dispatch(updateMovie());
 
       if (sourceData === SourceData.POSTER_MOVIE) {
-        dispatch(ActionCreator.loadPosterMovie(adaptedData));
+        dispatch(loadPosterMovie(adaptedData));
         return;
       }
 
-      dispatch(ActionCreator.loadMovie(adaptedData));
+      dispatch(loadMovie(adaptedData));
     })
     .catch(() => {
-      dispatch(ActionCreator.changeError(MessageError.UPDATE));
+      dispatch(changeError(MessageError.UPDATE));
     })
 );

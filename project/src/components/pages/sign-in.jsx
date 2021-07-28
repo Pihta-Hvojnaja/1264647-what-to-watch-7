@@ -1,8 +1,9 @@
 
 import React, { useRef, useState } from 'react';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import { ActionCreator } from '../../store/action';
+
+import { useSelector, useDispatch } from 'react-redux';
+import { getNumberFilmsShown } from '../../store/movie-data/selectors';
+import { changeFilmList } from '../../store/action';
 import { login } from '../../store/api-actions';
 
 import { NumberFilmsShown, MessageError } from '../../const';
@@ -22,12 +23,9 @@ const defaultError = {
 };
 
 
-function SignIn(props) {
-  const {
-    onSubmit,
-    numberFilmsShown,
-    changeFilmList,
-  } = props;
+function SignIn() {
+  const numberFilmsShown = useSelector(getNumberFilmsShown);
+  const dispatch = useDispatch();
 
   const [error, setError] = useState(defaultError);
 
@@ -49,13 +47,13 @@ function SignIn(props) {
     const newError = checkLoginFormError(loginElement, passwordElement );
 
     if (!newError.message) {
-      onSubmit({
+      dispatch(login({
         login: loginElement.value,
         password: passwordElement.value,
-      });
+      }));
 
       (numberFilmsShown !== NumberFilmsShown.FOR_GENRE) &&
-        changeFilmList(NumberFilmsShown.FOR_GENRE);
+        dispatch(changeFilmList(NumberFilmsShown.FOR_GENRE));
       return;
     }
 
@@ -131,27 +129,4 @@ function SignIn(props) {
 }
 
 
-SignIn.propTypes = {
-  onSubmit: PropTypes.func.isRequired,
-  changeFilmList: PropTypes.func.isRequired,
-  numberFilmsShown: PropTypes.number,
-};
-
-
-const mapDispatchToProps = (dispatch) => ({
-  onSubmit(authData) {
-    dispatch(login(authData));
-  },
-
-  changeFilmList(numberFilmsShown) {
-    dispatch(ActionCreator.changeFilmList(numberFilmsShown));
-  },
-});
-
-const mapStateToProps = (state) => ({
-  numberFilmsShown: state.numberFilmsShown,
-});
-
-
-export { SignIn };
-export default connect(mapStateToProps, mapDispatchToProps)(SignIn);
+export default SignIn;

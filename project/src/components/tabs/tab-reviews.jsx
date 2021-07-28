@@ -38,4 +38,4 @@ TabReviews.propTypes = {
 };
 
 
-export default TabReviews;
+export default React.memo(TabReviews);

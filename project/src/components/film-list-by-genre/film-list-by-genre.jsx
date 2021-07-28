@@ -1,14 +1,14 @@
 
 import React from 'react';
-import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
-import MovieDataProp from '../pages/movie-data.prop';
+import { useSelector } from 'react-redux';
+import { getFilteredMoviesData } from '../../store/movie-data/selectors';
 
 import GenreList from './genre-list';
 import FilmList from '../film-list/film-list';
 
 
-function FilmListByGenre({filteredMoviesData}) {
+function FilmListByGenre() {
+  const filteredMoviesData = useSelector(getFilteredMoviesData);
 
   return (
     <section className="catalog">
@@ -23,15 +23,4 @@ function FilmListByGenre({filteredMoviesData}) {
 }
 
 
-FilmListByGenre.propTypes = {
-  filteredMoviesData: PropTypes.arrayOf(MovieDataProp).isRequired,
-};
-
-
-const mapStateToProps = (state) => ({
-  filteredMoviesData: state.data.filteredMoviesData,
-});
-
-
-export { FilmListByGenre };
-export default connect(mapStateToProps, null)(FilmListByGenre);
+export default React.memo(FilmListByGenre);

@@ -39,4 +39,4 @@ HeaderPage.defaultProps = {
 };
 
 
-export default HeaderPage;
+export default React.memo(HeaderPage);

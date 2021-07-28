@@ -31,4 +31,4 @@ ReviewText.propTypes = {
 };
 
 
-export default ReviewText;
+export default React.memo(ReviewText);

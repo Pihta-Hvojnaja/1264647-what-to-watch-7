@@ -1,9 +1,10 @@
 
 import React from 'react';
-import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
-
+import { useSelector } from 'react-redux';
+import { getAuthorizationStatus } from '../../store/user/selectors';
 import { AuthorizationStatus } from '../../const';
+
+import PropTypes from 'prop-types';
 
 import ButtonPlay from './button-play';
 import ButtonMyList from './button-my-list';
@@ -17,8 +18,9 @@ function ButtonsFilmCard(props) {
     isBtnAddReview,
     idFilm,
     sourceData,
-    authorizationStatus,
   } = props;
+
+  const authorizationStatus = useSelector(getAuthorizationStatus);
 
   const isAuth = () => authorizationStatus === AuthorizationStatus.AUTH;
 
@@ -33,7 +35,6 @@ function ButtonsFilmCard(props) {
 
 
 ButtonsFilmCard.propTypes = {
-  authorizationStatus: PropTypes.string.isRequired,
   isBtnPlay: PropTypes.bool,
   isBtnMyList: PropTypes.bool,
   isBtnAddReview: PropTypes.bool,
@@ -49,10 +50,4 @@ ButtonsFilmCard.defaultProps = {
 };
 
 
-const mapStateToProps = (state) => ({
-  authorizationStatus: state.authorizationStatus,
-});
-
-
-export { ButtonsFilmCard };
-export default connect(mapStateToProps, null)(ButtonsFilmCard);
+export default React.memo(ButtonsFilmCard);

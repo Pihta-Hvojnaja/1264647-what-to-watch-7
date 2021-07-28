@@ -19,4 +19,4 @@ function ButtonAddReview() {
 }
 
 
-export default ButtonAddReview;
+export default React.memo(ButtonAddReview);

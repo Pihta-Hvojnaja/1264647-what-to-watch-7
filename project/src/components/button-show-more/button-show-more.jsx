@@ -1,14 +1,16 @@
 
 import React from 'react';
-import { connect } from 'react-redux';
-import { ActionCreator } from '../../store/action';
 
-import PropTypes from 'prop-types';
+import { useSelector, useDispatch } from 'react-redux';
+import { getNumberFilmsShown } from '../../store/movie-data/selectors';
+import { changeFilmList } from '../../store/action';
 
 import { NumberFilmsShown } from '../../const';
 
 
-function ButtonShowMore({numberFilmsShown, changeFilmList}) {
+function ButtonShowMore() {
+  const numberFilmsShown = useSelector(getNumberFilmsShown);
+  const dispatch =  useDispatch();
 
   return(
     <div className="catalog__more">
@@ -17,7 +19,7 @@ function ButtonShowMore({numberFilmsShown, changeFilmList}) {
         type="button"
         onClick={(evt) => {
           evt.preventDefault();
-          changeFilmList(numberFilmsShown + NumberFilmsShown.FOR_GENRE);
+          dispatch(changeFilmList(numberFilmsShown + NumberFilmsShown.FOR_GENRE));
         }}
       >
         Show more
@@ -27,23 +29,4 @@ function ButtonShowMore({numberFilmsShown, changeFilmList}) {
 }
 
 
-ButtonShowMore.propTypes = {
-  numberFilmsShown: PropTypes.number,
-  changeFilmList: PropTypes.func.isRequired,
-};
-
-
-const mapDispatchToProps = (dispatch) => ({
-  changeFilmList(numberFilmsShown) {
-    dispatch(ActionCreator.changeFilmList(numberFilmsShown));
-  },
-});
-
-const mapStateToProps = (state) => ({
-  numberFilmsShown: state.numberFilmsShown,
-});
-
-
-export { ButtonShowMore };
-export default connect(mapStateToProps, mapDispatchToProps)(ButtonShowMore);
-
+export default ButtonShowMore;

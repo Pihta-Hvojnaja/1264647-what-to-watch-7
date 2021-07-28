@@ -1,22 +1,20 @@
 
 import React from 'react';
 import { useHistory, Link } from 'react-router-dom';
-import { connect } from 'react-redux';
-import { AppRoute, NumberFilmsShown } from '../../const';
-import { ActionCreator } from '../../store/action';
-import PropTypes from 'prop-types';
 
+import { useSelector, useDispatch } from 'react-redux';
+import { getEmail, getAvatarUrl } from '../../store/user/selectors';
+import { AppRoute, NumberFilmsShown } from '../../const';
+import { changeFilmList } from '../../store/action';
 import { logout } from '../../store/api-actions';
 
+import PropTypes from 'prop-types';
 
-function UserBlockIn(props) {
-  const {
-    changeFilmList,
-    isMyList,
-    email,
-    avatarUrl,
-    logoutAuth,
-  } = props;
+
+function UserBlockIn({isMyList = false}) {
+  const email = useSelector(getEmail);
+  const avatarUrl = useSelector(getAvatarUrl);
+  const dispatch = useDispatch();
 
   const history = useHistory();
 
@@ -31,7 +29,7 @@ function UserBlockIn(props) {
             height="63"
             onClick={() => {
               if (!isMyList) {
-                changeFilmList(NumberFilmsShown.NO_NUMBER);
+                dispatch(changeFilmList(NumberFilmsShown.NO_NUMBER));
                 history.push(AppRoute.MY_LIST);
               }
             }}
@@ -42,7 +40,7 @@ function UserBlockIn(props) {
         <Link
           onClick={(evt) => {
             evt.preventDefault();
-            logoutAuth();
+            dispatch(logout());
           }}
           to="#"
           className="user-block__link"
@@ -56,11 +54,7 @@ function UserBlockIn(props) {
 
 
 UserBlockIn.propTypes = {
-  changeFilmList: PropTypes.func.isRequired,
   isMyList: PropTypes.bool,
-  logoutAuth: PropTypes.func.isRequired,
-  email: PropTypes.string.isRequired,
-  avatarUrl: PropTypes.string.isRequired,
 };
 
 UserBlockIn.defaultProps = {
@@ -68,21 +62,4 @@ UserBlockIn.defaultProps = {
 };
 
 
-const mapDispatchToProps = (dispatch) => ({
-  changeFilmList(maxCardsFilms) {
-    dispatch(ActionCreator.changeFilmList(maxCardsFilms));
-  },
-
-  logoutAuth() {
-    dispatch(logout());
-  },
-});
-
-const mapStateToProps = (state) => ({
-  email: state.authInfo.email,
-  avatarUrl: state.authInfo.avatarUrl,
-});
-
-
-export { UserBlockIn };
-export default connect(mapStateToProps, mapDispatchToProps)(UserBlockIn);
+export default UserBlockIn;

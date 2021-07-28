@@ -5,6 +5,7 @@ import { AppRoute } from '../../const';
 
 
 function NotFoundScreen() {
+
   return (
     <div className="user-page">
       <section className="user-page__title">
@@ -14,7 +15,7 @@ function NotFoundScreen() {
             lineHeight: '50px',
           }}
         >
-          404. Сожалеем, но мы не смогли найти запрашиваемую страницу или необходимые данные
+          Сожалеем, но мы не смогли найти запрашиваемую страницу или загрузить необходимые данные
         </h1>
         <div className="film-card__buttons">
           <Link

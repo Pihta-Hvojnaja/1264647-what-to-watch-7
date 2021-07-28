@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 
 
 function ButtonPlayContent({isPlaying}) {
+
   if (isPlaying) {
     return(
       <React.Fragment>

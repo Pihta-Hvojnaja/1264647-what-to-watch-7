@@ -1,5 +1,5 @@
 
-const LengtTextComment = {
+const LengthTextComment = {
   MIN: 50,
   MAX: 400,
 };
@@ -16,6 +16,6 @@ export const getText = (dataComment, value) => {
 
 export const checkLengthText = (text) => {
   const textLength = text.length;
-  return textLength < LengtTextComment.MIN || textLength > LengtTextComment.MAX;
+  return textLength < LengthTextComment.MIN || textLength > LengthTextComment.MAX;
 };
 

@@ -1,11 +1,10 @@
 
 import React, { useEffect } from 'react';
-import { connect } from 'react-redux';
-import { ActionCreator } from '../../store/action';
-import { fetchFavoriteMovies } from '../../store/api-actions';
-import PropTypes from 'prop-types';
-import MovieDataProp from './movie-data.prop';
 
+import { useSelector, useDispatch } from 'react-redux';
+import { getFavoriteMoviesData, getIsFavoriteMoviesLoaded, getNumberFilmsShown } from '../../store/movie-data/selectors';
+import { changeFilmList } from '../../store/action';
+import { fetchFavoriteMovies } from '../../store/api-actions';
 import { NumberFilmsShown } from '../../const';
 
 import LoadingScreen from '../loading-screen/loading-screen';
@@ -17,23 +16,21 @@ import Footer from '../footer/footer';
 const CLASS_NAME_MY_LIST = 'user-page__head';
 
 
-function MyList(props) {
-  const {
-    moviesData,
-    loadFavoriteMovies,
-    isFavoriteMoviesLoaded,
-    numberFilmsShown,
-    changeFilmList,
-  } = props;
+function MyList() {
+  const favoriteMoviesData = useSelector(getFavoriteMoviesData);
+  const isFavoriteMoviesLoaded = useSelector(getIsFavoriteMoviesLoaded);
+  const numberFilmsShown = useSelector(getNumberFilmsShown);
+  const dispatch = useDispatch();
+
 
   useEffect(() => {
     if(numberFilmsShown !== NumberFilmsShown.NO_NUMBER) {
-      changeFilmList(NumberFilmsShown.NO_NUMBER);
+      dispatch(changeFilmList(NumberFilmsShown.NO_NUMBER));
       return;
     }
 
     if (!isFavoriteMoviesLoaded) {
-      loadFavoriteMovies();
+      dispatch(fetchFavoriteMovies());
     }
   });
 
@@ -51,7 +48,7 @@ function MyList(props) {
 
       <section className="catalog">
         <h2 className="catalog__title visually-hidden">Catalog</h2>
-        <FilmList moviesData={moviesData}/>
+        <FilmList moviesData={favoriteMoviesData}/>
       </section>
 
       <Footer />
@@ -60,35 +57,4 @@ function MyList(props) {
 }
 
 
-MyList.propTypes = {
-  moviesData: PropTypes.oneOfType([PropTypes.arrayOf(MovieDataProp), PropTypes.array]).isRequired,
-  loadFavoriteMovies: PropTypes.func.isRequired,
-  isFavoriteMoviesLoaded: PropTypes.bool.isRequired,
-  numberFilmsShown: PropTypes.number,
-  changeFilmList: PropTypes.func.isRequired,
-};
-
-MyList.defaultProps = {
-  numberFilmsShown: null,
-};
-
-
-const mapDispatchToProps = (dispatch) => ({
-  changeFilmList(maxCardsFilms) {
-    dispatch(ActionCreator.changeFilmList(maxCardsFilms));
-  },
-
-  loadFavoriteMovies() {
-    dispatch(fetchFavoriteMovies());
-  },
-});
-
-const mapStateToProps = (state) => ({
-  numberFilmsShown: state.numberFilmsShown,
-  isFavoriteMoviesLoaded: state.loading.isFavoriteMoviesLoaded,
-  moviesData: state.data.favoriteMoviesData,
-});
-
-
-export { MyList };
-export default connect(mapStateToProps, mapDispatchToProps)(MyList);
+export default MyList;

@@ -1,8 +1,12 @@
 
 import React, { useState } from 'react';
-import { connect } from 'react-redux';
+
+import { useSelector, useDispatch } from 'react-redux';
+import { getError } from '../../store/error/selectors';
+import { getIsDeactiveForm } from '../../store/changing-state/selectors';
+
 import PropTypes from 'prop-types';
-import { ActionCreator } from '../../store/action';
+import { changeFormStatus } from '../../store/action';
 import { sendComment } from '../../store/api-actions';
 
 import Toast from '../toast/toast';
@@ -15,21 +19,16 @@ import { checkLengthText } from './utils';
 const DEFAULT_CHECKED_RADIO = 8;
 
 
-function FormAddReview(props) {
-  const {
-    idFilm,
-    postComment,
-    isDeactiveForm,
-    changeFormStatus,
-    error,
-  } = props;
+function FormAddReview({idFilm}) {
+  const isDeactiveForm = useSelector(getIsDeactiveForm);
+  const error = useSelector(getError);
+  const dispatch = useDispatch();
 
   const [text, setTex] = useState('');
   const [rating, setRating] = useState(DEFAULT_CHECKED_RADIO);
 
   const disabledButton = checkLengthText(text) || !rating;
   const extraClass = error ? 'shake': error;
-
 
   return (
     <React.Fragment>
@@ -40,8 +39,8 @@ function FormAddReview(props) {
         className={`add-review__form ${extraClass}`}
         onSubmit={(evt) => {
           evt.preventDefault();
-          changeFormStatus(true);
-          postComment({comment: text, rating: rating}, idFilm);
+          dispatch(changeFormStatus(true));
+          dispatch(sendComment({comment: text, rating: rating}, idFilm));
         }}
       >
         <ReviewRating
@@ -74,29 +73,7 @@ function FormAddReview(props) {
 
 FormAddReview.propTypes = {
   idFilm: PropTypes.string.isRequired,
-  postComment: PropTypes.func.isRequired,
-  isDeactiveForm: PropTypes.bool.isRequired,
-  changeFormStatus: PropTypes.func.isRequired,
-  error: PropTypes.string.isRequired,
 };
 
 
-const mapDispatchToProps = (dispatch) => ({
-  postComment(comment, idFilm) {
-    dispatch(sendComment(comment, idFilm));
-  },
-
-  changeFormStatus(boolValue) {
-    dispatch(ActionCreator.changeFormStatus(boolValue));
-  },
-});
-
-
-const mapStateToProps = (state) => ({
-  isDeactiveForm: state.isDeactiveForm,
-  error: state.error,
-});
-
-
-export { FormAddReview };
-export default connect(mapStateToProps, mapDispatchToProps)(FormAddReview);
+export default FormAddReview;

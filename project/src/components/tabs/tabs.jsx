@@ -12,12 +12,7 @@ import TabDetails from './tab-details';
 import TabReviews from './tab-reviews';
 
 
-function Tabs(props) {
-  const {
-    movieData,
-    comments,
-  } = props;
-
+function Tabs({movieData, comments}) {
   const [currentOptionTab, setCurrentOptionTab] = useState(TabOption.OVERVIEW);
 
   const tabsButtonsComponent =

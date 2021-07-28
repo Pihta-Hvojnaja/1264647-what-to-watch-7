@@ -1,8 +1,10 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { connect } from 'react-redux';
-import { ActionCreator } from '../../store/action';
+
+import { useSelector, useDispatch } from 'react-redux';
+import { getNumberFilmsShown } from '../../store/movie-data/selectors';
+import { changeFilmList } from '../../store/action';
 
 import PropTypes from 'prop-types';
 
@@ -10,13 +12,10 @@ import { AppRoute, NumberFilmsShown } from '../../const';
 import { getRoute } from '../../utils/get-route';
 
 
-function NavReview(props) {
-  const {
-    name,
-    idFilm,
-    numberFilmsShown,
-    changeFilmList,
-  } = props;
+function NavReview({name, idFilm}) {
+  const numberFilmsShown = useSelector(getNumberFilmsShown);
+  const dispatch = useDispatch();
+
 
   return (
     <nav className="breadcrumbs">
@@ -27,7 +26,7 @@ function NavReview(props) {
             className="breadcrumbs__link"
             onClick={() => {
               (numberFilmsShown !== NumberFilmsShown.FOR_SIMILAR) &&
-                changeFilmList(NumberFilmsShown.FOR_SIMILAR);
+              dispatch(changeFilmList(NumberFilmsShown.FOR_SIMILAR));
             }}
           >
             {name}
@@ -35,10 +34,8 @@ function NavReview(props) {
         </li>
         <li className="breadcrumbs__item">
           <Link
-            style={{cursor: 'default'}}
-            to="#"
+            to={getRoute(AppRoute.REVIEW, idFilm)}
             className="breadcrumbs__link"
-            onClick={(evt) => evt.preventDefault()}
           >
             Add review
           </Link>
@@ -52,25 +49,7 @@ function NavReview(props) {
 NavReview.propTypes = {
   name: PropTypes.string.isRequired,
   idFilm: PropTypes.string.isRequired,
-  numberFilmsShown: PropTypes.number,
-  changeFilmList: PropTypes.func.isRequired,
-};
-
-NavReview.defaultProps = {
-  numberFilmsShown: null,
 };
 
 
-const mapDispatchToProps = (dispatch) => ({
-  changeFilmList(maxCardsFilms) {
-    dispatch(ActionCreator.changeFilmList(maxCardsFilms));
-  },
-});
-
-const mapStateToProps = (state) => ({
-  numberFilmsShown: state.numberFilmsShown,
-});
-
-
-export { NavReview };
-export default connect(mapStateToProps, mapDispatchToProps)(NavReview);
+export default NavReview;
