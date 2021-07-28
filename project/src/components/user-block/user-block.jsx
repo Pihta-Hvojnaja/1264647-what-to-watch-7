@@ -30,4 +30,4 @@ UserBlock.defaultProps = {
 };
 
 
-export default UserBlock;
+export default React.memo(UserBlock);

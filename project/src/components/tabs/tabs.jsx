@@ -1,8 +1,8 @@
 
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import movieDataProp from '../pages/movie-data.prop';
-import CommentDataProp from '../pages/comment-data.prop';
+import movieDataProp from '../pages/prop/movie-data.prop';
+import CommentDataProp from '../pages/prop/comment-data.prop';
 
 import { TabOption } from '../../const';
 
@@ -56,4 +56,4 @@ Tabs.propTypes = {
 };
 
 
-export default Tabs;
+export default React.memo(Tabs);

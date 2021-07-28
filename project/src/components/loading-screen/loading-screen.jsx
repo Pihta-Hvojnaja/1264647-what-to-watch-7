@@ -3,6 +3,7 @@ import React from 'react';
 
 
 function LoadingScreen() {
+
   return (
     <div className="loader-box">
       <div className="loader">
@@ -15,4 +16,4 @@ function LoadingScreen() {
 }
 
 
-export default LoadingScreen;
+export default React.memo(LoadingScreen);

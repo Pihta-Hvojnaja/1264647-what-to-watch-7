@@ -1,6 +1,6 @@
 
 import React from 'react';
-import CommentDataProp from '../pages/comment-data.prop';
+import CommentDataProp from '../pages/prop/comment-data.prop';
 
 import dayjs from 'dayjs';
 

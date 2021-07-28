@@ -14,7 +14,7 @@ import {
 
 } from '../action';
 
-import { getGenresList } from '../../utils/getGenresList';
+import { getGenresList } from '../../filter';
 import { NumberFilmsShown } from '../../const';
 
 

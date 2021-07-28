@@ -1,4 +1,4 @@
 
 
-export const getAuthorizationStatus = () =>
+export const getAuthorizationStatusStore = () =>
   localStorage.getItem('authorizationStatus');

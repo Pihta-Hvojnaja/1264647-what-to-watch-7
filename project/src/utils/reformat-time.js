@@ -21,6 +21,7 @@ export const reformatRuntime = (runtime) => {
   return `${hours}h ${minutes}m`;
 };
 
+
 export const reformatTimeVideo = (sourceSeconds) => {
   const seconds = (sourceSeconds % OneHour.MINUTES).toString().padStart(2, '0');
 

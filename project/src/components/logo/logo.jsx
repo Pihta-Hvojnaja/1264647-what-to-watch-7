@@ -4,7 +4,6 @@ import { Link } from 'react-router-dom';
 
 import { useSelector, useDispatch } from 'react-redux';
 import { getMoviesData } from '../../store/movie-data/selectors';
-import { getGenre } from '../../store/genre-filter/selectors';
 import { changeGenre, createMovies, changeFilmList } from '../../store/action';
 
 import PropTypes from 'prop-types';
@@ -14,7 +13,6 @@ import { INITIAL_GENRE, NumberFilmsShown, AppRoute } from '../../const';
 
 function Logo({className = 'logo__link', isIndex}) {
   const moviesData = useSelector(getMoviesData);
-  const genre = useSelector(getGenre);
   const dispatch = useDispatch();
 
 
@@ -25,10 +23,9 @@ function Logo({className = 'logo__link', isIndex}) {
           if (isIndex) {
             evt.preventDefault();
           }
-          if (genre !== INITIAL_GENRE) {
-            dispatch(changeGenre(INITIAL_GENRE));
-            dispatch(createMovies(moviesData, INITIAL_GENRE));
-          }
+
+          dispatch(changeGenre(INITIAL_GENRE));
+          dispatch(createMovies(moviesData, INITIAL_GENRE));
           dispatch(changeFilmList(NumberFilmsShown.FOR_GENRE));
         }}
         to={AppRoute.ROOT}
@@ -54,4 +51,4 @@ Logo.defaultProps = {
 };
 
 
-export default Logo;
+export default React.memo(Logo);

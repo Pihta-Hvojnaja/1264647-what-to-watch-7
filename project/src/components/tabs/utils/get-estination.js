@@ -1,5 +1,4 @@
 
-
 export const getEstimation = (rating) => {
   switch (true) {
     case rating >= 0 && rating < 3:

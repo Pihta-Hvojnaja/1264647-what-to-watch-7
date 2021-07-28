@@ -7,7 +7,7 @@ import { changeFilmList } from '../../store/action';
 import { login } from '../../store/api-actions';
 
 import { NumberFilmsShown, MessageError } from '../../const';
-import { checkLoginFormError } from '../../utils/check-login-form-error';
+import { checkLoginFormError } from './utils/check-login-form-error';
 
 import Toast from '../toast/toast';
 import Logo from '../logo/logo';
@@ -129,4 +129,4 @@ function SignIn() {
 }
 
 
-export default SignIn;
+export default React.memo(SignIn);

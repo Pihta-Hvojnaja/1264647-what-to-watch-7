@@ -1,6 +1,6 @@
 
 import React from 'react';
-import movieDataProp from '../pages/movie-data.prop';
+import movieDataProp from '../pages/prop/movie-data.prop';
 
 import { reformatRuntime } from '../../utils/reformat-time';
 
@@ -51,4 +51,4 @@ function TabDetails({movieData}) {
 TabDetails.propTypes = movieDataProp;
 
 
-export default TabDetails;
+export default React.memo(TabDetails);

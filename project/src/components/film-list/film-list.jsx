@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { getNumberFilmsShown } from '../../store/movie-data/selectors';
 
 import PropTypes from 'prop-types';
-import MovieDataProp from '../pages/movie-data.prop';
+import MovieDataProp from '../pages/prop/movie-data.prop';
 
 import SmallFilmCard from '../small-film-card/small-film-card';
 import ButtonShowMore from '../button-show-more/button-show-more';
@@ -12,7 +12,6 @@ import ButtonShowMore from '../button-show-more/button-show-more';
 
 function FilmList({moviesData, isButton = false}) {
   const numberFilmsShown = useSelector(getNumberFilmsShown);
-
 
   if (moviesData.length === 0) {
 
@@ -61,4 +60,4 @@ FilmList.defaultProps = {
 };
 
 
-export default FilmList;
+export default React.memo(FilmList);

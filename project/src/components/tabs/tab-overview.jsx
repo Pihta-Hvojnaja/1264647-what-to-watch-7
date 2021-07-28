@@ -1,8 +1,8 @@
 
 import React from 'react';
-import movieDataProp from '../pages/movie-data.prop';
+import movieDataProp from '../pages/prop/movie-data.prop';
 
-import { getEstimation } from '../../utils/get-estination';
+import { getEstimation } from './utils/get-estination';
 
 
 function TabOverview({movieData}) {
@@ -41,4 +41,4 @@ function TabOverview({movieData}) {
 TabOverview.propTypes = movieDataProp;
 
 
-export default TabOverview;
+export default React.memo(TabOverview);

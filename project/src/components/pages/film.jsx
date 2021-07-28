@@ -144,4 +144,4 @@ function Film() {
 }
 
 
-export default Film;
+export default React.memo(Film);

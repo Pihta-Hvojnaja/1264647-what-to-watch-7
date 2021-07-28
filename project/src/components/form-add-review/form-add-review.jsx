@@ -76,4 +76,4 @@ FormAddReview.propTypes = {
 };
 
 
-export default FormAddReview;
+export default React.memo(FormAddReview);

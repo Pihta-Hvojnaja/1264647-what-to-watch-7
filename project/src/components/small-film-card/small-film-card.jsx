@@ -6,7 +6,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { getIdCurrentMovie, getNumberFilmsShown } from '../../store/movie-data/selectors';
 import { changeFilmList, resetData } from '../../store/action';
 
-import MovieDataProp from '../pages/movie-data.prop';
+import MovieDataProp from '../pages/prop/movie-data.prop';
 
 import { NumberFilmsShown, AppRoute } from '../../const';
 import { getRoute } from '../../utils/get-route';
@@ -31,8 +31,8 @@ function SmallFilmCard({movieData}) {
   const cursorValue = currentAddress === address ?  'default' : 'pointer';
 
   let timerId = null;
-  useEffect(() => () => clearTimeout(timerId));
 
+  useEffect(() => () => clearTimeout(timerId));
 
   const imgOrVideoComponent = movieData.id === idCurrentCard ?
     (
