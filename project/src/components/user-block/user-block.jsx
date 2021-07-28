@@ -6,7 +6,7 @@ import { getAuthorizationStatus } from '../../store/user/selectors';
 
 import PropTypes from 'prop-types';
 
-import { isCheckedAuth } from '../../utils/isCheckedAuth';
+import { isCheckedAuth } from '../../utils/is-checked-auth';
 import UserBlockOut from './user-block-out';
 import UserBlockIn from './user-block-in';
 
