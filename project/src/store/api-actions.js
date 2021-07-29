@@ -13,7 +13,9 @@ import {
   redirectToRoute,
   requireAuthorization,
   saveDataUser,
-  sendComment as postComment
+  sendComment as postComment,
+  resetDataLogout
+
 } from './action';
 
 import { adaptMovieToClient, adaptAuthInfoToClient } from './adapter';
@@ -83,15 +85,10 @@ export const fetchFavoriteMovies = () => (dispatch, _getState, api) => (
 export const checkAuth = () => (dispatch, _getState, api) => (
   api.get(APIRoute.LOGIN)
     .then(({data}) => {
-      localStorage.setItem('token', data.token);
-      localStorage.setItem('authorizationStatus', AuthorizationStatus.AUTH);
       dispatch(requireAuthorization(AuthorizationStatus.AUTH));
       dispatch(saveDataUser(adaptAuthInfoToClient(data)));
     })
-    .catch(() => {
-      localStorage.removeItem('authorizationStatus');
-      dispatch(requireAuthorization(AuthorizationStatus.NO_AUTH));
-    })
+    .catch(() => {})
 );
 
 export const login = ({login: email, password}) => (dispatch, _getState, api) => (
@@ -111,8 +108,11 @@ export const logout = () => (dispatch, _getState, api) => (
     .then(() => {
       localStorage.removeItem('token');
       localStorage.removeItem('authorizationStatus');
+      dispatch(closeSession());
     })
-    .then(() => dispatch(closeSession()))
+    .then(() =>{
+      dispatch(resetDataLogout());
+    })
 );
 
 export const sendComment = (dataComment, idFilm) => (dispatch, _getState, api) => (

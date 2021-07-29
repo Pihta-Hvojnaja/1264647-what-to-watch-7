@@ -4,7 +4,15 @@ import browserHistory from '../../browser-history';
 import PropTypes from 'prop-types';
 
 import ButtonPlayContent from './button-play-content';
-import { rewindVideo, changeProgressPlayer, changeVisibilityControls } from './utils';
+
+import {
+  rewindVideo,
+  changeProgressPlayer,
+  changeVisibilityControls,
+  enableFullScreen
+
+} from './utils';
+
 import { reformatTimeVideo } from '../../utils/reformat-time';
 
 
@@ -136,7 +144,7 @@ function VideoPlayer(props) {
           <button
             type="button"
             className="player__full-screen"
-            onClick={() => playerRef.current.requestFullscreen()}
+            onClick={() => enableFullScreen(playerRef.current)}
           >
             <svg viewBox="0 0 27 27" width="27" height="27">
               <use xlinkHref="#full-screen"></use>

@@ -10,7 +10,8 @@ import {
   createMovies,
   changeFilmList,
   changeStatusMovie,
-  resetData
+  resetDataFilm,
+  resetDataLogout
 
 } from '../action';
 
@@ -80,11 +81,19 @@ const movieData = createReducer(initialState, (builder) => {
     .addCase(changeStatusMovie, (state) => {
       state.loading.isFavoriteMoviesLoaded = false;
     })
-    .addCase(resetData, (state, action) => {
+    .addCase(resetDataFilm, (state, action) => {
       state.loading.isMovieLoaded = false;
       state.loading.isCommentsLoaded = false;
       state.loading.isRelatedMoviesLoaded = false;
       state.idCurrentMovie = action.payload;
+    })
+    .addCase(resetDataLogout, (state) => {
+      state.loading.isPosterMovieLoaded = false;
+      state.loading.isMoviesLoaded = false;
+      state.loading.isMovieLoaded = false;
+      state.loading.isRelatedMoviesLoaded = false;
+      state.loading.isFavoriteMoviesLoaded = false;
+      state.loading.isCommentsLoaded = false;
     });
 });
 

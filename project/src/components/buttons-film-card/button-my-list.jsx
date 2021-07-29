@@ -62,4 +62,4 @@ ButtonMyList.propTypes = {
 };
 
 
-export default ButtonMyList;
+export default React.memo(ButtonMyList);

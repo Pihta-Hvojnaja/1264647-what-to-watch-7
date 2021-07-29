@@ -3,10 +3,9 @@ import React from 'react';
 
 import { useSelector } from 'react-redux';
 import { getAuthorizationStatus } from '../../store/user/selectors';
-
+import { AuthorizationStatus } from '../../const';
 import PropTypes from 'prop-types';
 
-import { isCheckedAuth } from '../../utils/is-checked-auth';
 import UserBlockOut from './user-block-out';
 import UserBlockIn from './user-block-in';
 
@@ -15,7 +14,7 @@ function UserBlock({isMyList = false}) {
   const authorizationStatus = useSelector(getAuthorizationStatus);
 
   return (
-    isCheckedAuth(authorizationStatus) ?
+    authorizationStatus === AuthorizationStatus.NO_AUTH ?
       <UserBlockOut /> : <UserBlockIn isMyList={isMyList}/>
   );
 }

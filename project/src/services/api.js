@@ -14,6 +14,7 @@ const HttpCode = {
 
 const token = localStorage.getItem('token') ?? '';
 
+
 export const createAPI = (onUnauthorized) => {
   const api = axios.create({
     baseURL: BACKEND_URL,
@@ -23,12 +24,20 @@ export const createAPI = (onUnauthorized) => {
     },
   });
 
-  const onSuccess = (response) => response;
+  const onSuccess = (response) => {
+    const isToken = response.data.token;
+    if (isToken) {
+      api.defaults.headers['x-token'] = isToken;
+    }
+    return response;
+  };
 
   const onFail = (err) => {
-    const {response} = err;
+    const { response } = err;
 
     if (response.status === HttpCode.UNAUTHORIZED) {
+      localStorage.removeItem('token');
+      localStorage.removeItem('authorizationStatus');
       onUnauthorized();
     }
 

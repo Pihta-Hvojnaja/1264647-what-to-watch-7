@@ -11,7 +11,8 @@ export const ActionType = {
   LOAD_COMMENTS: 'data/loadComments',
   SENDING_COMMENT: 'data/sendingComment',
   SAVING_DATA_USER: 'data/savingDataUser',
-  RESET_DATA: 'data/resetData',
+  RESET_DATA_FILM: 'data/resetDataFilm',
+  RESET_DATA_LOGOUT: 'data/resetDataLogout',
   REQUIRED_AUTHORIZATION: 'user/requiredAuthorization',
   LOGOUT: 'user/logout',
   CHANGING_STATUS_MOVIE: 'user/changingStatusMovie',
@@ -61,10 +62,12 @@ export const changeFormStatus = createAction(
   (boolValue) => ({payload: boolValue}),
 );
 
-export const resetData = createAction(
-  ActionType.RESET_DATA,
+export const resetDataFilm = createAction(
+  ActionType.RESET_DATA_FILM,
   (idCurrentMovie) => ({payload: idCurrentMovie}),
 );
+
+export const resetDataLogout = createAction(ActionType.RESET_DATA_LOGOUT);
 
 export const requireAuthorization = createAction(
   ActionType.REQUIRED_AUTHORIZATION,

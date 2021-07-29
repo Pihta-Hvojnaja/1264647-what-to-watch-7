@@ -4,7 +4,7 @@ import { Link, useRouteMatch, useHistory } from 'react-router-dom';
 
 import { useSelector, useDispatch } from 'react-redux';
 import { getIdCurrentMovie, getNumberFilmsShown } from '../../store/movie-data/selectors';
-import { changeFilmList, resetData } from '../../store/action';
+import { changeFilmList, resetDataFilm } from '../../store/action';
 
 import MovieDataProp from '../pages/prop/movie-data.prop';
 
@@ -50,7 +50,7 @@ function SmallFilmCard({movieData}) {
       return;
     }
 
-    (idCurrentMovie !== id) && dispatch(resetData(id));
+    (idCurrentMovie !== id) && dispatch(resetDataFilm(id));
     (numberFilmsShown !== NumberFilmsShown.FOR_SIMILAR) &&
       dispatch(changeFilmList(NumberFilmsShown.FOR_SIMILAR));
 

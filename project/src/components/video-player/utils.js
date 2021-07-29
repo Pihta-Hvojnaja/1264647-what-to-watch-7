@@ -24,3 +24,14 @@ export const changeVisibilityControls = (exitRef, playerControlsRef, valueOpacit
   exitRef.current.style.opacity = valueOpacity;
   playerControlsRef.current.style.opacity = valueOpacity;
 };
+
+
+export const enableFullScreen = (element) => {
+  if(element.requestFullscreen) {
+    element.requestFullscreen();
+  } else if(element.webkitrequestFullscreen) {
+    element.webkitRequestFullscreen();
+  } else if(element.mozRequestFullscreen) {
+    element.mozRequestFullScreen();
+  }
+};

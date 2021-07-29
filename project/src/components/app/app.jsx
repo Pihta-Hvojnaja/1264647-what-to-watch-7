@@ -2,9 +2,12 @@
 import React  from 'react';
 import { Router as BrowserRouter, Switch, Route } from 'react-router-dom';
 import browserHistory from '../../browser-history';
+import { useSelector } from 'react-redux';
+import { getAuthorizationStatus } from '../../store/user/selectors';
 
-import { AppRoute } from '../../const';
+import { AppRoute, AuthorizationStatus } from '../../const';
 
+import LoadingScreen from '../loading-screen/loading-screen';
 import PrivateRoute from '../private-route/private-route';
 import Main from '../pages/main';
 import SignIn from '../pages/sign-in';
@@ -16,6 +19,13 @@ import NotFoundScreen from '../not-found-screen/not-found-screen';
 
 
 function App() {
+  const authorizationStatus = useSelector(getAuthorizationStatus);
+
+  if (authorizationStatus === AuthorizationStatus.UNKNOWN) {
+    return(
+      <LoadingScreen />
+    );
+  }
 
   return (
     <BrowserRouter history={browserHistory}>

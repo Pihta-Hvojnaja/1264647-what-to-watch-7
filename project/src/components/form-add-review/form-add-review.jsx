@@ -16,7 +16,7 @@ import ReviewText from './review-text';
 import { checkLengthText } from './utils';
 
 
-const DEFAULT_CHECKED_RADIO = 8;
+const DEFAULT_CHECKED_RADIO = null;
 
 
 function FormAddReview({idFilm}) {
